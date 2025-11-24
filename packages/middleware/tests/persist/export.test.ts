@@ -1,5 +1,5 @@
-import {  step, workflow } from '@motif-ts/core';
-import {conditionalEdge, transformEdge} from '@motif-ts/core/edge/serializable'
+import { step, workflow } from '@motif-ts/core';
+import { conditionalEdge, transformEdge } from '@motif-ts/core/edge/serializable';
 import { describe, expect, it } from 'vitest';
 import z from 'zod/v4';
 

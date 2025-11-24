@@ -13,17 +13,7 @@ export default function Page() {
         <Philosophy />
         <InteractiveShowcase />
         <Features />
-
-        <section id="usage" className="mx-auto max-w-7xl px-6 py-12 sm:py-16" aria-labelledby="usage-title">
-          <div className="mx-auto max-w-5xl">
-            <h2 id="usage-title" className="text-2xl font-semibold tracking-tight mb-8">
-              Detailed Usage Guide
-            </h2>
-            <div className="glass-panel rounded-xl p-6 md:p-10">
-              <UsageGuide />
-            </div>
-          </div>
-        </section>
+        <UsageGuide />
       </div>
     </main>
   );

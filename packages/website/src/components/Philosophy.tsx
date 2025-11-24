@@ -1,7 +1,7 @@
 'use client';
 
-import { motion } from 'framer-motion';
-import { Layers, LocateFixed, Package, ShieldCheck, Workflow, Zap } from 'lucide-react';
+import { Brain, Layers, LocateFixed, Package, ShieldCheck, Workflow } from 'lucide-react';
+import { motion } from 'motion/react';
 
 const PHILOSOPHY_ITEMS = [
   {
@@ -41,44 +41,44 @@ const PHILOSOPHY_ITEMS = [
     description:
       'The core is UI-agnostic and works in any framework or runtime. Optional adapters integrate with different UIs (React included) without coupling.',
     icon: Layers,
-    color: 'text-purple-400',
-    bg: 'bg-purple-500/10',
+    color: 'text-pink-400',
+    bg: 'bg-pink-500/10',
   },
   {
-    title: 'Fast Expression Engine',
+    title: 'AI-Friendly',
     description:
-      'A compact JS expression parser powers dynamic rules and templates, supporting modern language features with competitive performance.',
-    icon: Zap,
-    color: 'text-yellow-400',
-    bg: 'bg-yellow-500/10',
+      'Co-location makes it easy for AI to understand component purpose and for humans to verify. Future releases will include LLM.txt to guide AI operations.',
+    icon: Brain,
+    color: 'text-sky-400',
+    bg: 'bg-sky-500/10',
   },
 ];
 
 export default function Philosophy() {
   return (
-    <section id="philosophy" className="py-24 px-6 relative overflow-hidden">
+    <section id="philosophy" className="relative overflow-hidden px-6 py-24">
       {/* Background Elements */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-7xl pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/5 rounded-full blur-3xl" />
+      <div className="pointer-events-none absolute top-0 left-1/2 h-full w-full max-w-7xl -translate-x-1/2">
+        <div className="absolute top-1/4 left-1/4 h-96 w-96 rounded-full bg-blue-500/5 blur-3xl" />
+        <div className="absolute right-1/4 bottom-1/4 h-96 w-96 rounded-full bg-purple-500/5 blur-3xl" />
       </div>
 
-      <div className="max-w-7xl mx-auto relative z-10">
+      <div className="relative z-10 mx-auto max-w-7xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="mb-16 text-center"
         >
-          <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60">
+          <h2 className="mb-6 bg-gradient-to-b from-white to-white/60 bg-clip-text text-3xl font-bold tracking-tight text-transparent md:text-5xl">
             Core Philosophy
           </h2>
-          <p className="text-gray-400 max-w-2xl mx-auto text-lg">
+          <p className="mx-auto max-w-2xl text-lg text-gray-400">
             Built on first principles to solve the complexity of state management and workflow orchestration.
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="grid gap-6 md:grid-cols-2">
           {PHILOSOPHY_ITEMS.map((item, index) => (
             <motion.div
               key={item.title}
@@ -86,15 +86,15 @@ export default function Philosophy() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
-              className="glass-panel p-8 rounded-2xl border border-white/5 hover:border-white/10 transition-all group"
+              className="glass-panel group rounded-2xl border border-white/5 p-8 transition-all hover:border-white/10"
             >
               <div
-                className={`w-12 h-12 rounded-xl ${item.bg} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}
+                className={`h-12 w-12 rounded-xl ${item.bg} mb-6 flex items-center justify-center transition-transform duration-300 group-hover:scale-110`}
               >
-                <item.icon className={`w-6 h-6 ${item.color}`} />
+                <item.icon className={`h-6 w-6 ${item.color}`} />
               </div>
-              <h3 className="text-xl font-semibold text-white mb-3">{item.title}</h3>
-              <p className="text-gray-400 leading-relaxed">{item.description}</p>
+              <h3 className="mb-3 text-xl font-semibold text-white">{item.title}</h3>
+              <p className="leading-relaxed text-gray-400">{item.description}</p>
             </motion.div>
           ))}
         </div>

@@ -91,8 +91,18 @@ export function SignupForm() {
   ];
 
   return (
-    <div className="w-full">
-      <InteractiveUsage blocks={blocks} />
-    </div>
+    <section className="relative px-6 py-24" id="usage">
+      <div className="mx-auto max-w-7xl">
+        <div className="mb-16 text-center">
+          <h2 className="mb-6 bg-gradient-to-b from-white to-white/60 bg-clip-text text-3xl font-bold tracking-tight text-transparent md:text-5xl">
+            Detailed Usage Guide
+          </h2>
+          <p className="mx-auto max-w-2xl text-lg text-gray-400">
+            Step-by-step instructions to get you up and running.
+          </p>
+        </div>
+        <InteractiveUsage blocks={blocks} />
+      </div>
+    </section>
   );
 }

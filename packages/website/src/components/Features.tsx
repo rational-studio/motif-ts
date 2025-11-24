@@ -1,50 +1,64 @@
 'use client';
 
-import { motion } from 'framer-motion';
 import { GitMerge, History, LayoutTemplate, Terminal } from 'lucide-react';
+import { motion } from 'motion/react';
 
 const FEATURES = [
   {
     title: 'Workflow Orchestrator',
+    packageName: '@motif-ts/core',
     description: 'Compose steps with typed transitions, back navigation, lifecycle control, and middleware hooks.',
     icon: GitMerge,
+    color: 'text-blue-400',
+    bg: 'bg-blue-500/10',
   },
   {
     title: 'DevTools & Persist',
+    packageName: '@motif-ts/middleware',
     description: 'Use Redux DevTools time travel, export/import workflow snapshots, and restore states safely.',
     icon: History,
+    color: 'text-purple-400',
+    bg: 'bg-purple-500/10',
   },
   {
-    title: 'Framework Adapters',
+    title: 'React Adapter',
+    packageName: '@motif-ts/react',
     description:
-      'Use adapters to integrate with your UI of choice. React is supported, and the core works with any framework.',
+      'Use adapters to integrate with UI of choice. React adapter is included. More adapters are coming soon.',
     icon: LayoutTemplate,
+    color: 'text-pink-400',
+    bg: 'bg-pink-500/10',
   },
   {
     title: 'Expression Engine',
+    packageName: '@motif-ts/expression',
     description:
-      'Modern JS features including optional chaining, template literals, and object spread for dynamic rules.',
+      'Serialize expressions for portable workflows. Supports modern JavaScript syntax like optional chaining, template literals, and object spread.',
     icon: Terminal,
+    color: 'text-orange-400',
+    bg: 'bg-orange-500/10',
   },
 ];
 
 export default function Features() {
   return (
-    <section id="features" className="py-24 px-6 relative">
-      <div className="max-w-7xl mx-auto">
+    <section id="features" className="relative px-6 py-24">
+      <div className="mx-auto max-w-7xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="mb-16"
+          className="mb-16 text-center"
         >
-          <h2 className="text-3xl md:text-5xl font-bold mb-6">
-            Everything you need <br />
-            <span className="text-gray-500">to build complex flows.</span>
+          <h2 className="mb-6 bg-gradient-to-b from-white to-white/60 bg-clip-text text-3xl font-bold tracking-tight text-transparent md:text-5xl">
+            Everything you need to drive workflows
           </h2>
+          <p className="mx-auto max-w-2xl text-lg text-gray-400">
+            Powerful primitives for building complex application workflows with confidence.
+          </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
           {FEATURES.map((feature, index) => (
             <motion.div
               key={feature.title}
@@ -52,18 +66,16 @@ export default function Features() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
-              className="group relative p-6 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors"
+              className="group flex flex-col items-start gap-3 rounded-xl p-4 transition-colors"
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
-
-              <div className="relative z-10">
-                <div className="w-10 h-10 rounded-lg bg-gray-800 flex items-center justify-center mb-4 text-gray-300 group-hover:text-white group-hover:bg-gray-700 transition-all">
-                  <feature.icon className="w-5 h-5" />
-                </div>
-
-                <h3 className="text-lg font-semibold text-white mb-2">{feature.title}</h3>
-                <p className="text-sm text-gray-400 leading-relaxed">{feature.description}</p>
-              </div>
+              <h3
+                className={`inline-flex items-center gap-2 text-lg font-semibold ${feature.color} ${feature.bg} rounded-xl px-6 py-1`}
+              >
+                <feature.icon className="h-5 w-5" />
+                {feature.title}
+              </h3>
+              <code className={`text-sm ${feature.color}`}>{feature.packageName}</code>
+              <p className="text-sm leading-relaxed text-gray-400">{feature.description}</p>
             </motion.div>
           ))}
         </div>

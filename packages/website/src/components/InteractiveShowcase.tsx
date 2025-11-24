@@ -1,8 +1,7 @@
 'use client';
 
-import {  step, workflow, type CurrentStep, type WorkflowAPI } from '@motif-ts/core';
-import {conditionalEdge} from '@motif-ts/core/edge/non-serializable'
-import { AnimatePresence, motion } from 'framer-motion';
+import { step, workflow, type CurrentStep, type WorkflowAPI } from '@motif-ts/core';
+import { conditionalEdge } from '@motif-ts/core/edge/non-serializable';
 import {
   ArrowLeft,
   Check,
@@ -16,6 +15,7 @@ import {
   Smartphone,
   User,
 } from 'lucide-react';
+import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
 import ReactFlow, { Background, Controls, Edge, MarkerType, Node, useEdgesState, useNodesState } from 'reactflow';
 import { createHighlighter, type Highlighter } from 'shiki';
@@ -518,26 +518,26 @@ ${connections}
   };
 
   return (
-    <section className="py-24 px-6 relative">
-      <div className="max-w-7xl mx-auto">
+    <section className="relative px-6 py-24">
+      <div className="mx-auto max-w-7xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="mb-16 text-center"
         >
-          <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60">
+          <h2 className="mb-6 bg-gradient-to-b from-white to-white/60 bg-clip-text text-3xl font-bold tracking-tight text-transparent md:text-5xl">
             Build in Seconds
           </h2>
-          <p className="text-gray-400 max-w-2xl mx-auto text-lg">
+          <p className="mx-auto max-w-2xl text-lg text-gray-400">
             Compose workflows visually or with code. motif-ts keeps them in sync.
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 gap-8 h-[750px]">
+        <div className="grid h-[750px] gap-8 md:grid-cols-2">
           {/* Visual Builder */}
-          <div className="glass-panel rounded-2xl border border-gray-800 flex flex-col overflow-hidden relative">
-            <div className="absolute top-4 left-4 z-10 flex gap-2 flex-wrap">
+          <div className="glass-panel relative flex flex-col overflow-hidden rounded-2xl border border-gray-800">
+            <div className="absolute top-4 left-4 z-10 flex flex-wrap gap-2">
               {STEPS_INFO.map((step) => (
                 <motion.button
                   key={step.id}
@@ -545,12 +545,12 @@ ${connections}
                   disabled={activeSteps.includes(step.id)}
                   animate={errorShake === step.id ? { x: [0, -8, 8, -8, 8, 0] } : {}}
                   transition={{ duration: 0.4 }}
-                  className={`px-3 py-1 rounded-full text-sm border transition-all backdrop-blur-md ${
+                  className={`rounded-full border px-3 py-1 text-sm backdrop-blur-md transition-all ${
                     errorShake === step.id
-                      ? 'bg-red-500/20 border-red-500 text-red-400'
+                      ? 'border-red-500 bg-red-500/20 text-red-400'
                       : activeSteps.includes(step.id)
-                        ? 'bg-gray-800/50 border-gray-700 text-gray-500 cursor-not-allowed'
-                        : 'bg-blue-500/10 border-blue-500/50 text-blue-400 hover:bg-blue-500/20'
+                        ? 'cursor-not-allowed border-gray-700 bg-gray-800/50 text-gray-500'
+                        : 'border-blue-500/50 bg-blue-500/10 text-blue-400 hover:bg-blue-500/20'
                   }`}
                 >
                   + {step.label}
@@ -559,17 +559,17 @@ ${connections}
               {activeSteps.length > 0 && (
                 <button
                   onClick={resetBuilder}
-                  className="p-1.5 rounded-full bg-red-500/10 border border-red-500/50 text-red-400 hover:bg-red-500/20 transition-colors"
+                  className="rounded-full border border-red-500/50 bg-red-500/10 p-1.5 text-red-400 transition-colors hover:bg-red-500/20"
                   title="Reset"
                 >
-                  <RotateCcw className="w-4 h-4" />
+                  <RotateCcw className="h-4 w-4" />
                 </button>
               )}
             </div>
 
-            <div className="flex-1 bg-[#0a0c10] relative">
+            <div className="relative flex-1 bg-[#0a0c10]">
               {activeSteps.length === 0 && (
-                <div className="absolute inset-0 flex items-center justify-center text-gray-600 pointer-events-none">
+                <div className="pointer-events-none absolute inset-0 flex items-center justify-center text-gray-600">
                   <p>Add steps to start building...</p>
                 </div>
               )}
@@ -585,8 +585,8 @@ ${connections}
               </ReactFlow>
             </div>
 
-            <div className="p-4 border-t border-gray-800 bg-black/40 backdrop-blur-md flex justify-between items-center z-10">
-              <label className="flex items-center gap-2 text-sm text-gray-400 cursor-pointer hover:text-white transition-colors">
+            <div className="z-10 flex items-center justify-between border-t border-gray-800 bg-black/40 p-4 backdrop-blur-md">
+              <label className="flex cursor-pointer items-center gap-2 text-sm text-gray-400 transition-colors hover:text-white">
                 <input
                   type="checkbox"
                   checked={useConditional}
@@ -599,22 +599,22 @@ ${connections}
               <button
                 onClick={runWorkflow}
                 disabled={activeSteps.length === 0 || isRunning}
-                className={`px-6 py-2 rounded-lg font-semibold flex items-center gap-2 transition-all ${
+                className={`flex items-center gap-2 rounded-lg px-6 py-2 font-semibold transition-all ${
                   activeSteps.length === 0 || isRunning
-                    ? 'bg-gray-800 text-gray-500 cursor-not-allowed'
-                    : 'bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-500/20'
+                    ? 'cursor-not-allowed bg-gray-800 text-gray-500'
+                    : 'bg-blue-600 text-white shadow-lg shadow-blue-500/20 hover:bg-blue-500'
                 }`}
               >
-                <Play className="w-4 h-4" />
+                <Play className="h-4 w-4" />
                 {isRunning ? 'Running...' : 'Run Workflow'}
               </button>
             </div>
           </div>
 
           {/* Right Panel: Flip Card (Code vs Live Preview) */}
-          <div className="relative group h-full" style={{ perspective: '1000px' }}>
+          <div className="group relative h-full" style={{ perspective: '1000px' }}>
             <motion.div
-              className="w-full h-full relative"
+              className="relative h-full w-full"
               style={{ transformStyle: 'preserve-3d' }}
               animate={{ rotateY: isRunning ? 180 : 0 }}
               transition={{
@@ -626,62 +626,62 @@ ${connections}
             >
               {/* Front Face: Generated Code */}
               <div
-                className="absolute inset-0 glass-panel rounded-2xl border border-gray-800 overflow-hidden flex flex-col bg-[#0a0c10]"
+                className="glass-panel absolute inset-0 flex flex-col overflow-hidden rounded-2xl border border-gray-800 bg-[#0a0c10]"
                 style={{ backfaceVisibility: 'hidden' }}
               >
-                <div className="px-6 py-4 border-b border-gray-800 text-gray-500 font-medium flex items-center gap-2 bg-white/5">
-                  <Code className="w-4 h-4" />
+                <div className="flex items-center gap-2 border-b border-gray-800 bg-white/5 px-6 py-4 font-medium text-gray-500">
+                  <Code className="h-4 w-4" />
                   Generated Code
                 </div>
-                <div className="flex-1 p-6 overflow-auto">
+                <div className="flex-1 overflow-auto p-6">
                   <CodeBlock code={generateCode()} />
                 </div>
               </div>
 
               {/* Back Face: Live Preview (Mobile Simulator) */}
               <div
-                className="absolute inset-0 glass-panel rounded-2xl border border-gray-800 overflow-hidden flex flex-col bg-black"
+                className="glass-panel absolute inset-0 flex flex-col overflow-hidden rounded-2xl border border-gray-800 bg-black"
                 style={{
                   transform: 'rotateY(180deg)',
                   backfaceVisibility: 'hidden',
                 }}
               >
-                <div className="px-6 py-4 border-b border-gray-800 text-white font-medium flex items-center justify-between bg-blue-500/10">
+                <div className="flex items-center justify-between border-b border-gray-800 bg-blue-500/10 px-6 py-4 font-medium text-white">
                   <div className="flex items-center gap-2">
-                    <Smartphone className="w-4 h-4 text-blue-400" />
+                    <Smartphone className="h-4 w-4 text-blue-400" />
                     Live Preview
                   </div>
                   <button
                     onClick={handleRestart}
-                    className="text-xs bg-gray-800 hover:bg-gray-700 px-2 py-1 rounded text-gray-300 transition-colors"
+                    className="rounded bg-gray-800 px-2 py-1 text-xs text-gray-300 transition-colors hover:bg-gray-700"
                   >
                     Stop & Flip Back
                   </button>
                 </div>
 
-                <div className="flex-1 relative flex items-center justify-center p-8 bg-gradient-to-br from-gray-900 to-black">
+                <div className="relative flex flex-1 items-center justify-center bg-gradient-to-br from-gray-900 to-black p-8">
                   {/* Mobile Device Frame */}
-                  <div className="relative mx-auto border-gray-800 bg-gray-900 border-[12px] rounded-[3rem] h-[630px] w-[300px] shadow-2xl flex flex-col overflow-hidden ring-1 ring-white/5">
+                  <div className="relative mx-auto flex h-[630px] w-[300px] flex-col overflow-hidden rounded-[3rem] border-[12px] border-gray-800 bg-gray-900 shadow-2xl ring-1 ring-white/5">
                     {/* Status Bar */}
-                    <div className="h-12 w-full flex justify-between items-center px-6 text-[10px] text-white pt-4 z-10">
-                      <span className="font-medium pl-1">9:41</span>
+                    <div className="z-10 flex h-12 w-full items-center justify-between px-6 pt-4 text-[10px] text-white">
+                      <span className="pl-1 font-medium">9:41</span>
                     </div>
 
                     {/* Navigation Bar */}
-                    <div className="h-10 w-full flex items-center px-4 z-10 relative">
+                    <div className="relative z-10 flex h-10 w-full items-center px-4">
                       {canGoBack && (
                         <button
                           onClick={handleBack}
-                          className="flex items-center gap-1 text-blue-400 hover:text-blue-300 transition-colors text-sm font-medium"
+                          className="flex items-center gap-1 text-sm font-medium text-blue-400 transition-colors hover:text-blue-300"
                         >
-                          <ArrowLeft className="w-4 h-4" />
+                          <ArrowLeft className="h-4 w-4" />
                           Back
                         </button>
                       )}
                     </div>
 
                     {/* Screen Content */}
-                    <div className="flex-1 bg-gray-950 relative overflow-hidden flex flex-col">
+                    <div className="relative flex flex-1 flex-col overflow-hidden bg-gray-950">
                       <AnimatePresence mode="wait">
                         {isRunning && currentStepKind === 'input' && (
                           <motion.div
@@ -689,13 +689,13 @@ ${connections}
                             initial={{ x: 50, opacity: 0 }}
                             animate={{ x: 0, opacity: 1 }}
                             exit={{ x: -50, opacity: 0 }}
-                            className="absolute inset-0 p-6 flex flex-col justify-center bg-gradient-to-b from-gray-900 to-black"
+                            className="absolute inset-0 flex flex-col justify-center bg-gradient-to-b from-gray-900 to-black p-6"
                           >
-                            <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center mb-8 shadow-lg shadow-blue-500/20">
-                              <Mail className="w-8 h-8 text-white" />
+                            <div className="mb-8 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-tr from-blue-600 to-purple-600 shadow-lg shadow-blue-500/20">
+                              <Mail className="h-8 w-8 text-white" />
                             </div>
-                            <h2 className="text-2xl text-white font-bold mb-2">Welcome Back</h2>
-                            <p className="text-sm text-gray-400 mb-8">Enter your email to access your workspace.</p>
+                            <h2 className="mb-2 text-2xl font-bold text-white">Welcome Back</h2>
+                            <p className="mb-8 text-sm text-gray-400">Enter your email to access your workspace.</p>
 
                             <form
                               className="space-y-4"
@@ -706,21 +706,21 @@ ${connections}
                               }}
                             >
                               <div>
-                                <label className="text-xs text-gray-500 font-medium ml-1 mb-1 block">EMAIL</label>
+                                <label className="mb-1 ml-1 block text-xs font-medium text-gray-500">EMAIL</label>
                                 <input
                                   name="email"
                                   type="email"
                                   placeholder="name@example.com"
-                                  className="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-3.5 text-white text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all placeholder:text-gray-600"
+                                  className="w-full rounded-xl border border-gray-800 bg-gray-900 px-4 py-3.5 text-sm text-white transition-all placeholder:text-gray-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
                                   defaultValue="hello@zhongliang.wang"
                                 />
                               </div>
 
                               <button
                                 type="submit"
-                                className="w-full bg-white text-black hover:bg-gray-100 rounded-xl py-3.5 text-sm font-bold transition-colors flex items-center justify-center gap-2 shadow-lg shadow-white/5"
+                                className="flex w-full items-center justify-center gap-2 rounded-xl bg-white py-3.5 text-sm font-bold text-black shadow-lg shadow-white/5 transition-colors hover:bg-gray-100"
                               >
-                                Continue <ChevronRight className="w-4 h-4" />
+                                Continue <ChevronRight className="h-4 w-4" />
                               </button>
                             </form>
                           </motion.div>
@@ -732,14 +732,14 @@ ${connections}
                             initial={{ x: 50, opacity: 0 }}
                             animate={{ x: 0, opacity: 1 }}
                             exit={{ x: -50, opacity: 0 }}
-                            className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-black"
+                            className="absolute inset-0 flex flex-col items-center justify-center bg-black p-6 text-center"
                           >
                             <div className="relative">
-                              <div className="absolute inset-0 bg-blue-500/20 blur-xl rounded-full" />
-                              <Loader2 className="w-12 h-12 text-blue-500 animate-spin relative z-10" />
+                              <div className="absolute inset-0 rounded-full bg-blue-500/20 blur-xl" />
+                              <Loader2 className="relative z-10 h-12 w-12 animate-spin text-blue-500" />
                             </div>
-                            <h3 className="text-white font-semibold mt-8 mb-2">Verifying...</h3>
-                            <p className="text-xs text-gray-500 uppercase tracking-wider">Secure Connection</p>
+                            <h3 className="mt-8 mb-2 font-semibold text-white">Verifying...</h3>
+                            <p className="text-xs tracking-wider text-gray-500 uppercase">Secure Connection</p>
                           </motion.div>
                         )}
 
@@ -749,13 +749,13 @@ ${connections}
                             initial={{ x: 50, opacity: 0 }}
                             animate={{ x: 0, opacity: 1 }}
                             exit={{ x: -50, opacity: 0 }}
-                            className="absolute inset-0 p-6 flex flex-col justify-center bg-gradient-to-b from-gray-900 to-black"
+                            className="absolute inset-0 flex flex-col justify-center bg-gradient-to-b from-gray-900 to-black p-6"
                           >
-                            <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-purple-600 to-pink-600 flex items-center justify-center mb-8 shadow-lg shadow-purple-500/20">
-                              <User className="w-8 h-8 text-white" />
+                            <div className="mb-8 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-tr from-purple-600 to-pink-600 shadow-lg shadow-purple-500/20">
+                              <User className="h-8 w-8 text-white" />
                             </div>
-                            <h2 className="text-2xl text-white font-bold mb-2">Your Profile</h2>
-                            <p className="text-sm text-gray-400 mb-8">Tell us a bit about yourself.</p>
+                            <h2 className="mb-2 text-2xl font-bold text-white">Your Profile</h2>
+                            <p className="mb-8 text-sm text-gray-400">Tell us a bit about yourself.</p>
 
                             <form
                               className="space-y-4"
@@ -766,31 +766,31 @@ ${connections}
                               }}
                             >
                               <div>
-                                <label className="text-xs text-gray-500 font-medium ml-1 mb-1 block">NAME</label>
+                                <label className="mb-1 ml-1 block text-xs font-medium text-gray-500">NAME</label>
                                 <input
                                   name="name"
                                   type="text"
                                   placeholder="John Doe"
-                                  className="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-3.5 text-white text-sm focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all placeholder:text-gray-600"
+                                  className="w-full rounded-xl border border-gray-800 bg-gray-900 px-4 py-3.5 text-sm text-white transition-all placeholder:text-gray-600 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 focus:outline-none"
                                   defaultValue="Zhongliang Wang"
                                 />
                               </div>
                               <div>
-                                <label className="text-xs text-gray-500 font-medium ml-1 mb-1 block">ROLE</label>
+                                <label className="mb-1 ml-1 block text-xs font-medium text-gray-500">ROLE</label>
                                 <input
                                   name="role"
                                   type="text"
                                   placeholder="Developer"
-                                  className="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-3.5 text-white text-sm focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all placeholder:text-gray-600"
+                                  className="w-full rounded-xl border border-gray-800 bg-gray-900 px-4 py-3.5 text-sm text-white transition-all placeholder:text-gray-600 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 focus:outline-none"
                                   defaultValue="Engineer"
                                 />
                               </div>
 
                               <button
                                 type="submit"
-                                className="w-full bg-white text-black hover:bg-gray-100 rounded-xl py-3.5 text-sm font-bold transition-colors flex items-center justify-center gap-2 shadow-lg shadow-white/5"
+                                className="flex w-full items-center justify-center gap-2 rounded-xl bg-white py-3.5 text-sm font-bold text-black shadow-lg shadow-white/5 transition-colors hover:bg-gray-100"
                               >
-                                Next <ChevronRight className="w-4 h-4" />
+                                Next <ChevronRight className="h-4 w-4" />
                               </button>
                             </form>
                           </motion.div>
@@ -802,24 +802,24 @@ ${connections}
                             initial={{ x: 50, opacity: 0 }}
                             animate={{ x: 0, opacity: 1 }}
                             exit={{ x: -50, opacity: 0 }}
-                            className="absolute inset-0 p-6 flex flex-col justify-center bg-gradient-to-b from-gray-900 to-black"
+                            className="absolute inset-0 flex flex-col justify-center bg-gradient-to-b from-gray-900 to-black p-6"
                           >
-                            <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-green-600 to-teal-600 flex items-center justify-center mb-8 shadow-lg shadow-green-500/20">
-                              <CreditCard className="w-8 h-8 text-white" />
+                            <div className="mb-8 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-tr from-green-600 to-teal-600 shadow-lg shadow-green-500/20">
+                              <CreditCard className="h-8 w-8 text-white" />
                             </div>
-                            <h2 className="text-2xl text-white font-bold mb-2">Select Plan</h2>
-                            <p className="text-sm text-gray-400 mb-8">Choose a plan that fits your needs.</p>
+                            <h2 className="mb-2 text-2xl font-bold text-white">Select Plan</h2>
+                            <p className="mb-8 text-sm text-gray-400">Choose a plan that fits your needs.</p>
 
                             <div className="space-y-3">
                               {['Free', 'Pro', 'Team'].map((plan) => (
                                 <button
                                   key={plan}
                                   onClick={() => handlePlanSelect(plan)}
-                                  className="w-full bg-gray-900 border border-gray-800 hover:border-green-500/50 hover:bg-gray-800 rounded-xl p-4 text-left transition-all group"
+                                  className="group w-full rounded-xl border border-gray-800 bg-gray-900 p-4 text-left transition-all hover:border-green-500/50 hover:bg-gray-800"
                                 >
-                                  <div className="flex justify-between items-center">
-                                    <span className="text-white font-medium">{plan}</span>
-                                    <ChevronRight className="w-4 h-4 text-gray-600 group-hover:text-green-500 transition-colors" />
+                                  <div className="flex items-center justify-between">
+                                    <span className="font-medium text-white">{plan}</span>
+                                    <ChevronRight className="h-4 w-4 text-gray-600 transition-colors group-hover:text-green-500" />
                                   </div>
                                 </button>
                               ))}
@@ -832,16 +832,16 @@ ${connections}
                             key="success"
                             initial={{ scale: 0.9, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
-                            className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-gradient-to-b from-green-950/30 to-black"
+                            className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-b from-green-950/30 to-black p-6 text-center"
                           >
-                            <div className="w-20 h-20 rounded-full bg-green-500/10 flex items-center justify-center mb-6 ring-1 ring-green-500/20">
-                              <Check className="w-10 h-10 text-green-500" />
+                            <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-green-500/10 ring-1 ring-green-500/20">
+                              <Check className="h-10 w-10 text-green-500" />
                             </div>
-                            <h3 className="text-2xl text-white font-bold mb-2">All Set!</h3>
-                            <div className="text-sm text-gray-400 mb-8 space-y-1">
+                            <h3 className="mb-2 text-2xl font-bold text-white">All Set!</h3>
+                            <div className="mb-8 space-y-1 text-sm text-gray-400">
                               <p>
                                 Welcome,{' '}
-                                <span className="text-white font-medium">
+                                <span className="font-medium text-white">
                                   {orchestratorRef.current?.getCurrentStep().state.data?.name || 'User'}
                                 </span>
                               </p>
@@ -857,14 +857,14 @@ ${connections}
                                   {orchestratorRef.current?.getCurrentStep().state.data?.plan || 'N/A'}
                                 </span>
                               </p>
-                              <p className="text-xs mt-2 text-gray-500">
+                              <p className="mt-2 text-xs text-gray-500">
                                 {orchestratorRef.current?.getCurrentStep().state.data?.email}
                               </p>
                             </div>
 
                             <button
                               onClick={handleRestart}
-                              className="px-8 py-3 bg-gray-900 hover:bg-gray-800 border border-gray-800 text-white rounded-full text-sm font-medium transition-all"
+                              className="rounded-full border border-gray-800 bg-gray-900 px-8 py-3 text-sm font-medium text-white transition-all hover:bg-gray-800"
                             >
                               Start Over
                             </button>
@@ -874,7 +874,7 @@ ${connections}
                     </div>
 
                     {/* Home Indicator */}
-                    <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-32 h-1 bg-gray-800 rounded-full" />
+                    <div className="absolute bottom-2 left-1/2 h-1 w-32 -translate-x-1/2 rounded-full bg-gray-800" />
                   </div>
                 </div>
               </div>

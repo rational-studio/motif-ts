@@ -5,8 +5,8 @@ import ReactFlow, { Background, Edge, Node, Position, useEdgesState, useNodesSta
 
 import 'reactflow/dist/style.css';
 
-import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
+import { motion } from 'motion/react';
 
 import MotifStepNode, { MotifStepData } from './MotifStepNode';
 
@@ -18,87 +18,151 @@ const initialNodes: Node<MotifStepData>[] = [
   {
     id: '1',
     type: 'motifStep',
-    data: {
-      label: 'Input Step',
-      inputSchema: 'z.void()',
-      outputSchema: 'z.string()',
-      status: 'idle',
-    },
-    position: { x: 0, y: 150 },
+    data: { label: 'User Signup', inputSchema: 'z.void()', outputSchema: 'User', status: 'idle', hasInput: false, hasOutput: true },
+    position: { x: 0, y: 200 },
     sourcePosition: Position.Right,
     targetPosition: Position.Left,
   },
   {
     id: '2',
     type: 'motifStep',
-    data: {
-      label: 'Validate',
-      inputSchema: 'z.string()',
-      outputSchema: 'z.string().email()',
-      status: 'idle',
-    },
-    position: { x: 300, y: 0 },
+    data: { label: 'Check Region', inputSchema: 'User', outputSchema: 'Region', status: 'idle', hasInput: true, hasOutput: true },
+    position: { x: 250, y: 200 },
     sourcePosition: Position.Right,
     targetPosition: Position.Left,
   },
   {
     id: '3',
     type: 'motifStep',
-    data: {
-      label: 'Enrich',
-      inputSchema: 'z.string()',
-      outputSchema: 'UserProfile',
-      hasStore: true,
-      status: 'idle',
-    },
-    position: { x: 300, y: 300 },
+    data: { label: 'Enrich Data', inputSchema: 'User', outputSchema: 'EnrichedUser', hasStore: true, status: 'idle', hasInput: true, hasOutput: true },
+    position: { x: 500, y: 50 },
     sourcePosition: Position.Right,
     targetPosition: Position.Left,
   },
   {
     id: '4',
     type: 'motifStep',
-    data: {
-      label: 'Success',
-      inputSchema: 'UserProfile',
-      outputSchema: 'z.void()',
-      status: 'idle',
-    },
-    position: { x: 600, y: 150 },
+    data: { label: 'GDPR Check', inputSchema: 'User', outputSchema: 'Compliance', status: 'idle', hasInput: true, hasOutput: true },
+    position: { x: 500, y: 350 },
+    sourcePosition: Position.Right,
+    targetPosition: Position.Left,
+  },
+  {
+    id: '5',
+    type: 'motifStep',
+    data: { label: 'Score Lead', inputSchema: 'EnrichedUser', outputSchema: 'Score', status: 'idle', hasInput: true, hasOutput: true },
+    position: { x: 750, y: 50 },
+    sourcePosition: Position.Right,
+    targetPosition: Position.Left,
+  },
+  {
+    id: '6',
+    type: 'motifStep',
+    data: { label: 'Consent Log', inputSchema: 'Compliance', outputSchema: 'LogEntry', hasStore: true, status: 'idle', hasInput: true, hasOutput: true },
+    position: { x: 750, y: 350 },
+    sourcePosition: Position.Right,
+    targetPosition: Position.Left,
+  },
+  {
+    id: '7',
+    type: 'motifStep',
+    data: { label: 'Manual Review', inputSchema: 'LogEntry', outputSchema: 'ReviewResult', status: 'idle', hasInput: true, hasOutput: true },
+    position: { x: 1000, y: 350 },
+    sourcePosition: Position.Right,
+    targetPosition: Position.Left,
+  },
+  {
+    id: '8',
+    type: 'motifStep',
+    data: { label: 'Decision', inputSchema: 'Score | Review', outputSchema: 'Action', status: 'idle', hasInput: true, hasOutput: true },
+    position: { x: 1250, y: 200 },
+    sourcePosition: Position.Right,
+    targetPosition: Position.Left,
+  },
+  {
+    id: '9',
+    type: 'motifStep',
+    data: { label: 'Notify Sales', inputSchema: 'Action', outputSchema: 'void', status: 'idle', hasInput: true, hasOutput: true },
+    position: { x: 1500, y: 100 },
+    sourcePosition: Position.Right,
+    targetPosition: Position.Left,
+  },
+  {
+    id: '10',
+    type: 'motifStep',
+    data: { label: 'Add to Nurture', inputSchema: 'Action', outputSchema: 'void', status: 'idle', hasInput: true, hasOutput: true },
+    position: { x: 1500, y: 300 },
+    sourcePosition: Position.Right,
+    targetPosition: Position.Left,
+  },
+  {
+    id: '11',
+    type: 'motifStep',
+    data: { label: 'Sync to CRM', inputSchema: 'User', outputSchema: 'CRMRecord', hasStore: true, status: 'idle', hasInput: true, hasOutput: true },
+    position: { x: 1750, y: 200 },
+    sourcePosition: Position.Right,
+    targetPosition: Position.Left,
+  },
+  {
+    id: '12',
+    type: 'motifStep',
+    data: { label: 'Success', inputSchema: 'void', outputSchema: 'void', status: 'idle', hasInput: true, hasOutput: false },
+    position: { x: 2000, y: 200 },
     sourcePosition: Position.Right,
     targetPosition: Position.Left,
   },
 ];
 
 const initialEdges: Edge[] = [
-  {
-    id: 'e1-2',
-    source: '1',
-    target: '2',
-    animated: true,
-    style: { stroke: '#333' },
+  { id: 'e1-2', source: '1', target: '2', animated: true, style: { stroke: '#555' } },
+  { 
+    id: 'e2-3', 
+    source: '2', 
+    target: '3', 
+    animated: true, 
+    style: { stroke: '#555' }, 
+    label: 'US/CA',
+    labelStyle: { fill: '#a1a1aa', fontWeight: 600, fontSize: 12 },
+    labelBgStyle: { fill: '#18181b', fillOpacity: 0.9, rx: 4, ry: 4 }
   },
-  {
-    id: 'e1-3',
-    source: '1',
-    target: '3',
-    animated: true,
-    style: { stroke: '#333' },
+  { 
+    id: 'e2-4', 
+    source: '2', 
+    target: '4', 
+    animated: true, 
+    style: { stroke: '#555' }, 
+    label: 'EU/UK',
+    labelStyle: { fill: '#a1a1aa', fontWeight: 600, fontSize: 12 },
+    labelBgStyle: { fill: '#18181b', fillOpacity: 0.9, rx: 4, ry: 4 }
   },
-  {
-    id: 'e2-4',
-    source: '2',
-    target: '4',
-    animated: true,
-    style: { stroke: '#333' },
+  { id: 'e3-5', source: '3', target: '5', animated: true, style: { stroke: '#555' } },
+  { id: 'e4-6', source: '4', target: '6', animated: true, style: { stroke: '#555' } },
+  { id: 'e6-7', source: '6', target: '7', animated: true, style: { stroke: '#555' } },
+  { id: 'e5-8', source: '5', target: '8', animated: true, style: { stroke: '#555' } },
+  { id: 'e7-8', source: '7', target: '8', animated: true, style: { stroke: '#555' } },
+  { 
+    id: 'e8-9', 
+    source: '8', 
+    target: '9', 
+    animated: true, 
+    style: { stroke: '#555' }, 
+    label: 'High Priority',
+    labelStyle: { fill: '#a1a1aa', fontWeight: 600, fontSize: 12 },
+    labelBgStyle: { fill: '#18181b', fillOpacity: 0.9, rx: 4, ry: 4 }
   },
-  {
-    id: 'e3-4',
-    source: '3',
-    target: '4',
-    animated: true,
-    style: { stroke: '#333' },
+  { 
+    id: 'e8-10', 
+    source: '8', 
+    target: '10', 
+    animated: true, 
+    style: { stroke: '#555' }, 
+    label: 'Standard',
+    labelStyle: { fill: '#a1a1aa', fontWeight: 600, fontSize: 12 },
+    labelBgStyle: { fill: '#18181b', fillOpacity: 0.9, rx: 4, ry: 4 }
   },
+  { id: 'e9-11', source: '9', target: '11', animated: true, style: { stroke: '#555' } },
+  { id: 'e10-11', source: '10', target: '11', animated: true, style: { stroke: '#555' } },
+  { id: 'e11-12', source: '11', target: '12', animated: true, style: { stroke: '#555' } },
 ];
 
 export default function InteractiveHero() {
@@ -118,59 +182,72 @@ export default function InteractiveHero() {
   };
 
   const runSimulation = useCallback(async () => {
+    if (isRunning) return;
     setIsRunning(true);
 
-    // Reset
+    // Reset all nodes
     setNodes((nds) => nds.map((n) => ({ ...n, data: { ...n.data, status: 'idle' } })));
 
-    // Randomly select between Validate (2) or Enrich (3)
-    const middleStep = Math.random() > 0.5 ? '2' : '3';
-    const sequence = ['1', middleStep, '4'];
+    let currentNodeId = '1';
+    
+    // Build adjacency list for traversal
+    const adjacency: Record<string, string[]> = {};
+    initialEdges.forEach(edge => {
+      if (!adjacency[edge.source]) adjacency[edge.source] = [];
+      adjacency[edge.source].push(edge.target);
+    });
 
-    for (const id of sequence) {
+    while (currentNodeId) {
       // Transition In
-      updateNodeStatus(id, 'transitionIn');
+      updateNodeStatus(currentNodeId, 'transitionIn');
+      await new Promise((r) => setTimeout(r, 600));
+
+      // Ready (Processing)
+      updateNodeStatus(currentNodeId, 'ready');
       await new Promise((r) => setTimeout(r, 800));
 
-      // Ready
-      updateNodeStatus(id, 'ready');
-      await new Promise((r) => setTimeout(r, 1000));
-
       // Transition Out
-      updateNodeStatus(id, 'transitionOut');
-      await new Promise((r) => setTimeout(r, 500));
+      updateNodeStatus(currentNodeId, 'transitionOut');
+      await new Promise((r) => setTimeout(r, 400));
 
-      // Idle (moved to next)
-      updateNodeStatus(id, 'idle');
+      // Idle (Done)
+      updateNodeStatus(currentNodeId, 'idle');
+
+      // Find next steps
+      const nextOptions = adjacency[currentNodeId];
+      if (!nextOptions || nextOptions.length === 0) {
+        currentNodeId = ''; // End of flow
+      } else {
+        // Randomly pick next node if multiple branches
+        currentNodeId = nextOptions[Math.floor(Math.random() * nextOptions.length)];
+      }
     }
 
     setIsRunning(false);
-  }, [setNodes]);
+  }, [setNodes, isRunning]);
 
-  // Auto-run simulation every 10 seconds
+  // Auto-run simulation
   useEffect(() => {
-    // Run immediately on mount
     runSimulation();
-
-    // Set up interval for subsequent runs
+    
     const interval = setInterval(() => {
       runSimulation();
-    }, 10000);
+    }, 35000);
 
     return () => clearInterval(interval);
   }, [runSimulation]);
 
   return (
-    <section className="relative h-[90vh] w-full overflow-hidden flex flex-col items-center justify-center pt-20">
+    <section className="relative flex h-[90vh] w-full flex-col items-center justify-center overflow-hidden pt-20">
       {/* Background Grid */}
-      <div className="absolute inset-0 grid-bg z-0 pointer-events-none" />
+      <div className="grid-bg pointer-events-none absolute inset-0 z-0" />
 
-      <div className="z-10 text-center mb-10 max-w-3xl px-4">
+      <div className="z-10 mb-10 max-w-3xl px-4 text-center">
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="text-5xl md:text-7xl font-bold tracking-tight mb-6"
+          className="mb-6 text-5xl font-bold tracking-tight md:text-7xl"
         >
           Workflow Orchestration <br />
           <span className="text-gradient">Reimagined</span>
@@ -180,19 +257,19 @@ export default function InteractiveHero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="text-xl text-gray-400 mb-8"
+          className="mb-8 text-xl text-gray-400"
         >
-          Dead simple. Fully typed. Effortlessly orchestrated. Build complex workflows with confidence and ease.
+          Dead simple. Fully typed. Effortlessly orchestrated.
         </motion.p>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="flex gap-4 justify-center"
+          className="flex justify-center gap-4"
         >
-          <button className="glass-button px-8 py-3 rounded-full font-semibold text-white flex items-center gap-2 group">
-            Get Started <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+          <button className="glass-button group flex items-center gap-2 rounded-full px-8 py-3 font-semibold text-white">
+            Get Started <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
           </button>
         </motion.div>
       </div>
@@ -202,7 +279,7 @@ export default function InteractiveHero() {
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1, delay: 0.5 }}
-        className="w-full max-w-5xl h-[500px] glass-panel rounded-xl overflow-hidden relative border border-gray-800 shadow-2xl"
+        className="glass-panel relative h-[500px] w-full max-w-6xl overflow-hidden rounded-xl border border-gray-800 shadow-2xl"
       >
         <ReactFlow
           nodes={nodes}
@@ -211,14 +288,21 @@ export default function InteractiveHero() {
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
           fitView={true}
+          nodesDraggable={false}
+          nodesConnectable={false}
+          elementsSelectable={false}
+          zoomOnScroll={false}
+          panOnScroll={false}
+          panOnDrag={false}
+          zoomOnDoubleClick={false}
           proOptions={{ hideAttribution: true }}
         >
           <Background color="#333" gap={20} size={1} />
         </ReactFlow>
 
         {/* Overlay Badge */}
-        <div className="absolute top-4 right-4 glass-button px-3 py-1 rounded-full text-xs text-gray-400 flex items-center gap-2">
-          <div className={`w-2 h-2 rounded-full ${isRunning ? 'bg-green-500 animate-pulse' : 'bg-gray-500'}`} />
+        <div className="glass-button absolute top-4 right-4 flex items-center gap-2 rounded-full px-3 py-1 text-xs text-gray-400">
+          <div className={`h-2 w-2 rounded-full ${isRunning ? 'animate-pulse bg-green-500' : 'bg-gray-500'}`} />
           {isRunning ? 'Workflow Running...' : 'Idle'}
         </div>
       </motion.div>

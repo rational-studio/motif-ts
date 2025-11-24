@@ -1,7 +1,7 @@
 'use client';
 
-import { AnimatePresence, motion } from 'framer-motion';
 import { Box, Code2, Layers, Terminal } from 'lucide-react';
+import { AnimatePresence, motion } from 'motion/react';
 import { useState } from 'react';
 
 type CodeBlock = {
@@ -19,39 +19,49 @@ const iconMap = {
   code: Code2,
 };
 
+const colorMap = {
+  terminal: { text: 'text-blue-400', bg: 'bg-blue-500/10' },
+  box: { text: 'text-purple-400', bg: 'bg-purple-500/10' },
+  layers: { text: 'text-pink-400', bg: 'bg-pink-500/10' },
+  code: { text: 'text-orange-400', bg: 'bg-orange-500/10' },
+};
+
 export default function InteractiveUsage({ blocks }: { blocks: CodeBlock[] }) {
   const [activeTab, setActiveTab] = useState(blocks[0].value);
   const activeBlock = blocks.find((b) => b.value === activeTab) || blocks[0];
   return (
-    <div className="grid lg:grid-cols-5 gap-8">
+    <div className="grid gap-8 lg:grid-cols-5">
       {/* Sidebar / Tabs */}
-      <div className="lg:col-span-2 space-y-4">
+      <div className="space-y-4 lg:col-span-2">
         {blocks.map((block) => {
           const Icon = iconMap[block.iconName];
+          const colors = colorMap[block.iconName];
+          const isActive = activeTab === block.value;
+
           return (
             <button
               key={block.value}
               onClick={() => setActiveTab(block.value)}
-              className={`w-full text-left p-4 rounded-xl border transition-all duration-300 flex items-start gap-4 group ${
-                activeTab === block.value
-                  ? 'bg-blue-500/10 border-blue-500/50 shadow-lg shadow-blue-500/10'
-                  : 'bg-white/5 border-white/5 hover:bg-white/10 hover:border-white/10'
+              className={`group flex w-full items-start gap-4 rounded-xl p-4 text-left transition-all duration-300 ${
+                isActive ? 'bg-white/5' : 'hover:bg-white/5'
               }`}
             >
               <div
-                className={`mt-1 p-2 rounded-lg transition-colors ${
-                  activeTab === block.value
-                    ? 'bg-blue-500 text-white'
-                    : 'bg-gray-800 text-gray-400 group-hover:text-white'
+                className={`mt-1 rounded-lg p-2 transition-colors ${
+                  isActive
+                    ? `${colors.bg} ${colors.text}`
+                    : `${colors.bg} ${colors.text} opacity-80 group-hover:opacity-100`
                 }`}
               >
-                <Icon className="w-5 h-5" />
+                <Icon className="h-5 w-5" />
               </div>
               <div>
-                <h3 className={`font-semibold mb-1 ${activeTab === block.value ? 'text-white' : 'text-gray-300'}`}>
+                <h3
+                  className={`mb-1 font-semibold ${isActive ? 'text-white' : 'text-gray-300 group-hover:text-white'}`}
+                >
                   {block.label}
                 </h3>
-                <p className="text-sm text-gray-500 leading-relaxed">{block.description}</p>
+                <p className="text-sm leading-relaxed text-gray-500">{block.description}</p>
               </div>
             </button>
           );
@@ -60,22 +70,22 @@ export default function InteractiveUsage({ blocks }: { blocks: CodeBlock[] }) {
 
       {/* Code Window */}
       <div className="lg:col-span-3">
-        <div className="glass-panel rounded-2xl border border-gray-800 overflow-hidden flex flex-col h-full min-h-[400px]">
+        <div className="glass-panel flex h-full min-h-[400px] flex-col overflow-hidden rounded-2xl border border-gray-800">
           {/* Window Header */}
-          <div className="flex items-center justify-between px-4 py-3 border-b border-gray-800 bg-black/20">
+          <div className="flex items-center justify-between border-b border-gray-800 bg-black/20 px-4 py-3">
             <div className="flex gap-2">
-              <div className="w-3 h-3 rounded-full bg-red-500/20 border border-red-500/50" />
-              <div className="w-3 h-3 rounded-full bg-yellow-500/20 border border-yellow-500/50" />
-              <div className="w-3 h-3 rounded-full bg-green-500/20 border border-green-500/50" />
+              <div className="h-3 w-3 rounded-full border border-red-500/50 bg-red-500/20" />
+              <div className="h-3 w-3 rounded-full border border-yellow-500/50 bg-yellow-500/20" />
+              <div className="h-3 w-3 rounded-full border border-green-500/50 bg-green-500/20" />
             </div>
-            <div className="text-xs font-mono text-gray-500">
+            <div className="font-mono text-xs text-gray-500">
               {activeBlock.label.toLowerCase().replace(/\s+/g, '-')}.ts
             </div>
             <div className="w-12" /> {/* Spacer */}
           </div>
 
           {/* Code Content */}
-          <div className="relative flex-1 bg-[#0d1117] p-6 overflow-x-auto">
+          <div className="relative flex-1 overflow-x-auto bg-[#0a0c10] p-6">
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeTab}

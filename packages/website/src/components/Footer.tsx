@@ -2,39 +2,36 @@ import { Github } from 'lucide-react';
 
 export default function Footer() {
   return (
-    <footer className="border-t border-white/10 bg-black/20 backdrop-blur-sm mt-24">
+    <footer className="mt-24 border-t border-white/10 bg-black/20 backdrop-blur-sm">
       <div className="mx-auto max-w-7xl px-6 py-12">
-        <div className="grid md:grid-cols-2 gap-8 items-center">
+        <div className="grid items-center gap-8 md:grid-cols-2">
           <div className="space-y-2">
             <h3 className="text-lg font-bold text-white">motif-ts</h3>
-            <p className="text-sm text-gray-400 max-w-md">
-              Dead Simple. Fully Typed. Effortlessly Orchestrated.
-              <br />
-              Built for reliability and developer experience.
-            </p>
+            <p className="max-w-md text-sm text-gray-400">Dead Simple. Fully Typed. Effortlessly Orchestrated.</p>
+            <p className="max-w-md text-sm text-gray-700">Built for reliability and developer experience.</p>
           </div>
 
-          <div className="flex flex-col md:items-end gap-4">
+          <div className="flex flex-col gap-4 md:items-end">
             <div className="flex items-center gap-6">
               <a
                 href="https://github.com/rational-studio/motif-ts"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-gray-400 hover:text-white transition-colors flex items-center gap-2 text-sm"
+                className="flex items-center gap-2 text-sm text-gray-400 transition-colors hover:text-white"
               >
-                <Github className="w-4 h-4" />
+                <Github className="h-4 w-4" />
                 GitHub
               </a>
               <a
                 href="https://github.com/rational-studio/motif-ts#readme"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-gray-400 hover:text-white transition-colors text-sm"
+                className="text-sm text-gray-400 transition-colors hover:text-white"
               >
                 Documentation
               </a>
             </div>
-            <div className="text-xs text-gray-500">MIT License • © {new Date().getFullYear()} Rational Studio</div>
+            <div className="text-xs text-gray-500">MIT License • © {new Date().getFullYear()} Zhongliang Wang</div>
           </div>
         </div>
       </div>

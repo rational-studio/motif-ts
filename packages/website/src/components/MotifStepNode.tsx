@@ -10,6 +10,8 @@ export type MotifStepData = {
   outputSchema?: string;
   status?: 'idle' | 'transitionIn' | 'ready' | 'transitionOut';
   hasStore?: boolean;
+  hasInput?: boolean;
+  hasOutput?: boolean;
 };
 
 const MotifStepNode = ({ data, sourcePosition, targetPosition }: NodeProps<MotifStepData>) => {
@@ -41,42 +43,39 @@ const MotifStepNode = ({ data, sourcePosition, targetPosition }: NodeProps<Motif
 
   return (
     <div
-      className={`min-w-[200px] bg-[#0a0a0a] rounded-xl border-2 transition-all duration-300 ${getStatusColor(data.status)}`}
+      className={`min-w-[200px] rounded-xl border-2 bg-[#0a0a0a] transition-all duration-300 ${getStatusColor(data.status)}`}
     >
-      {targetPosition ? <Handle type="target" position={targetPosition} className="!bg-gray-500 !w-3 !h-3" /> : null}
+      {targetPosition && data.hasInput ? (
+       <Handle type="target" position={targetPosition} className="!h-3 !w-3 !bg-gray-500" />
+      ) : null}
 
       {/* Header */}
-      <div className="bg-gray-900/50 p-3 rounded-t-xl border-b border-gray-800 flex justify-between items-center">
+      <div className="flex items-center justify-between rounded-t-xl border-b border-gray-800 bg-gray-900/50 p-3">
         <span className="font-bold text-gray-200">{data.label}</span>
-        {data.hasStore && <Database className="w-4 h-4 text-purple-400" />}
+        {data.hasStore && <Database className="h-4 w-4 text-purple-400" />}
       </div>
 
       {/* Body */}
-      <div className="p-3 space-y-2">
+      <div className="space-y-2 p-3">
         {data.inputSchema && (
-          <div className="text-xs font-mono text-gray-400 flex items-center gap-2">
+          <div className="flex items-center gap-2 font-mono text-xs text-gray-400">
             <span className="text-blue-400">In:</span> {data.inputSchema}
           </div>
         )}
         {data.outputSchema && (
-          <div className="text-xs font-mono text-gray-400 flex items-center gap-2">
+          <div className="flex items-center gap-2 font-mono text-xs text-gray-400">
             <span className="text-green-400">Out:</span> {data.outputSchema}
           </div>
         )}
 
         {/* Status Badge */}
         <div
-          className={`mt-2 text-[10px] uppercase tracking-wider font-bold px-2 py-1 rounded-full w-fit
-          ${data.status === 'idle' ? 'bg-gray-800 text-gray-500' : ''}
-          ${data.status === 'transitionIn' ? 'bg-yellow-500/20 text-yellow-400' : ''}
-          ${data.status === 'ready' ? 'bg-green-500/20 text-green-400' : ''}
-          ${data.status === 'transitionOut' ? 'bg-blue-500/20 text-blue-400' : ''}
-        `}
+          className={`mt-2 w-fit rounded-full px-2 py-1 text-[10px] font-bold tracking-wider uppercase ${data.status === 'idle' ? 'bg-gray-800 text-gray-500' : ''} ${data.status === 'transitionIn' ? 'bg-yellow-500/20 text-yellow-400' : ''} ${data.status === 'ready' ? 'bg-green-500/20 text-green-400' : ''} ${data.status === 'transitionOut' ? 'bg-blue-500/20 text-blue-400' : ''} `}
         >
           {getStatusLabel(data.status)}
         </div>
       </div>
-      {sourcePosition ? <Handle type="source" position={sourcePosition} className="!bg-gray-500 !w-3 !h-3" /> : null}
+      {sourcePosition ? <Handle type="source" position={sourcePosition} className="!h-3 !w-3 !bg-gray-500" /> : null}
     </div>
   );
 };

@@ -23,8 +23,8 @@ export default function CommandTabsClient({
             onClick={() => setActive(variant)}
             className={
               variant === active
-                ? 'rounded px-3 py-1 bg-black text-white dark:bg-white dark:text-black'
-                : 'rounded px-3 py-1 bg-black/5 text-black hover:bg-black/10 dark:bg-white/10 dark:text-white dark:hover:bg-white/20'
+                ? 'rounded bg-black px-3 py-1 text-white dark:bg-white dark:text-black'
+                : 'rounded bg-black/5 px-3 py-1 text-black hover:bg-black/10 dark:bg-white/10 dark:text-white dark:hover:bg-white/20'
             }
           >
             {variant}
