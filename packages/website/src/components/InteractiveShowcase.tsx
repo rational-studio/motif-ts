@@ -1,6 +1,7 @@
 'use client';
 
-import { conditionalEdge, step, workflow, type CurrentStep, type WorkflowAPI } from '@motif-ts/core';
+import {  step, workflow, type CurrentStep, type WorkflowAPI } from '@motif-ts/core';
+import {conditionalEdge} from '@motif-ts/core/edge/non-serializable'
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   ArrowLeft,
@@ -351,7 +352,7 @@ export default function InteractiveShowcase() {
         const next = instanceMap.get(nextId);
 
         if (useConditional && currentId === 'input') {
-          orchestrator.connect(conditionalEdge(current, next, 'true'));
+          orchestrator.connect(conditionalEdge(current, next, () => true));
         } else {
           orchestrator.connect(current, next);
         }
@@ -465,7 +466,7 @@ export default function InteractiveShowcase() {
   const handleBack = () => {
     if (orchestratorRef.current) {
       try {
-        orchestratorRef.current.back();
+        orchestratorRef.current.goBack();
       } catch (err) {
         console.error('Back navigation failed:', err);
       }
