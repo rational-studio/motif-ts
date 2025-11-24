@@ -7,7 +7,7 @@ import { motion } from 'motion/react';
 const FEATURES = [
   {
     title: 'Workflow Orchestrator',
-    packageName: '@motif-ts/core',
+    packageName: [{ name: '@motif-ts/core', active: true }],
     description: 'Compose steps with typed transitions, back navigation, lifecycle control, and middleware hooks.',
     icon: GitMerge,
     color: 'text-blue-400',
@@ -15,15 +15,19 @@ const FEATURES = [
   },
   {
     title: 'DevTools & Persist',
-    packageName: '@motif-ts/middleware',
+    packageName: [{ name: '@motif-ts/middleware', active: true }],
     description: 'Use Redux DevTools time travel, export/import workflow snapshots, and restore states safely.',
     icon: History,
     color: 'text-purple-400',
     bg: 'bg-purple-500/10',
   },
   {
-    title: 'React Adapter',
-    packageName: '@motif-ts/react',
+    title: 'Framework Adapters',
+    packageName: [
+      { name: '@motif-ts/react', active: true },
+      { name: '@motif-ts/vue', active: false },
+      { name: '@motif-ts/svelte', active: false },
+    ],
     description:
       'Use adapters to integrate with UI of choice. React adapter is included. More adapters are coming soon.',
     icon: LayoutTemplate,
@@ -32,7 +36,7 @@ const FEATURES = [
   },
   {
     title: 'Expression Engine',
-    packageName: '@motif-ts/expression',
+    packageName: [{ name: '@motif-ts/expression', active: true }],
     description:
       'Serialize expressions for portable workflows. Supports modern JavaScript syntax like optional chaining, template literals, and object spread.',
     icon: Terminal,
@@ -79,8 +83,14 @@ export default function Features() {
                 <feature.icon className="h-5 w-5" />
                 {feature.title}
               </h3>
-              <code className={cn('text-sm', feature.color)}>{feature.packageName}</code>
+
               <p className="text-sm leading-relaxed text-gray-400">{feature.description}</p>
+              {feature.packageName.map((packageName, index) => (
+                <code className={cn('text-sm', packageName.active ? feature.color : 'text-gray-400')} key={index}>
+                  {packageName.name}
+                  {packageName.active ? null : <span className="text-gray-600">(coming soon)</span>}
+                </code>
+              ))}
             </motion.div>
           ))}
         </div>
