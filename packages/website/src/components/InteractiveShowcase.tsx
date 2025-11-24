@@ -22,6 +22,7 @@ import { createHighlighter, type Highlighter } from 'shiki';
 
 import 'reactflow/dist/style.css';
 
+import { cn } from '@/lib/cn';
 import { z } from 'zod';
 
 import MotifStepNode, { MotifStepData } from './MotifStepNode';
@@ -545,13 +546,13 @@ ${connections}
                   disabled={activeSteps.includes(step.id)}
                   animate={errorShake === step.id ? { x: [0, -8, 8, -8, 8, 0] } : {}}
                   transition={{ duration: 0.4 }}
-                  className={`rounded-full border px-3 py-1 text-sm backdrop-blur-md transition-all ${
-                    errorShake === step.id
-                      ? 'border-red-500 bg-red-500/20 text-red-400'
-                      : activeSteps.includes(step.id)
-                        ? 'cursor-not-allowed border-gray-700 bg-gray-800/50 text-gray-500'
-                        : 'border-blue-500/50 bg-blue-500/10 text-blue-400 hover:bg-blue-500/20'
-                  }`}
+                  className={cn('rounded-full border px-3 py-1 text-sm backdrop-blur-md transition-all', {
+                    'border-red-500 bg-red-500/20 text-red-400': errorShake === step.id,
+                    'cursor-not-allowed border-gray-700 bg-gray-800/50 text-gray-500':
+                      activeSteps.includes(step.id) && errorShake !== step.id,
+                    'border-blue-500/50 bg-blue-500/10 text-blue-400 hover:bg-blue-500/20':
+                      !activeSteps.includes(step.id) && errorShake !== step.id,
+                  })}
                 >
                   + {step.label}
                 </motion.button>
@@ -599,11 +600,12 @@ ${connections}
               <button
                 onClick={runWorkflow}
                 disabled={activeSteps.length === 0 || isRunning}
-                className={`flex items-center gap-2 rounded-lg px-6 py-2 font-semibold transition-all ${
+                className={cn(
+                  'flex items-center gap-2 rounded-lg px-6 py-2 font-semibold transition-all',
                   activeSteps.length === 0 || isRunning
                     ? 'cursor-not-allowed bg-gray-800 text-gray-500'
-                    : 'bg-blue-600 text-white shadow-lg shadow-blue-500/20 hover:bg-blue-500'
-                }`}
+                    : 'bg-blue-600 text-white shadow-lg shadow-blue-500/20 hover:bg-blue-500',
+                )}
               >
                 <Play className="h-4 w-4" />
                 {isRunning ? 'Running...' : 'Run Workflow'}

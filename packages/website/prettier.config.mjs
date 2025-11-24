@@ -9,6 +9,7 @@ const config = {
   trailingComma: 'all',
   importOrder: ['<THIRD_PARTY_MODULES>', '', '^[./]'],
   tailwindStylesheet: './src/app/globals.css',
+  tailwindFunctions: ['cn'],
   plugins: [import('@ianvs/prettier-plugin-sort-imports'), import('prettier-plugin-tailwindcss')],
   importOrderTypeScriptVersion: '5.8.0',
 };

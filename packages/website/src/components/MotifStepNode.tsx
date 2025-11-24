@@ -1,5 +1,6 @@
 'use client';
 
+import { cn } from '@/lib/cn';
 import { Database } from 'lucide-react';
 import { memo } from 'react';
 import { Handle, NodeProps } from 'reactflow';
@@ -15,16 +16,21 @@ export type MotifStepData = {
 };
 
 const MotifStepNode = ({ data, sourcePosition, targetPosition }: NodeProps<MotifStepData>) => {
-  const getStatusColor = (s?: string) => {
-    switch (s) {
-      case 'transitionIn':
-        return 'border-yellow-500 shadow-[0_0_15px_rgba(234,179,8,0.3)]';
-      case 'ready':
-        return 'border-green-500 shadow-[0_0_15px_rgba(34,197,94,0.3)]';
-      case 'transitionOut':
-        return 'border-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.3)]';
-      default:
-        return 'border-gray-700';
+  const getStatusColor = (s?: string, important?: boolean, state: 'input' | 'output' | 'both' = 'both') => {
+    if (s === 'transitionIn' && (state === 'input' || state === 'both')) {
+      return important
+        ? '!border-yellow-500 shadow-[0_0_15px_rgba(234,179,8,0.3)]'
+        : 'border-yellow-500 shadow-[0_0_15px_rgba(234,179,8,0.3)]';
+    } else if (s === 'ready' && state === 'both') {
+      return important
+        ? '!border-green-500 shadow-[0_0_15px_rgba(34,197,94,0.3)]'
+        : 'border-green-500 shadow-[0_0_15px_rgba(34,197,94,0.3)]';
+    } else if (s === 'transitionOut' && (state === 'output' || state === 'both')) {
+      return important
+        ? '!border-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.3)]'
+        : 'border-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.3)]';
+    } else {
+      return important ? '!border-gray-700' : 'border-gray-700';
     }
   };
 
@@ -43,10 +49,20 @@ const MotifStepNode = ({ data, sourcePosition, targetPosition }: NodeProps<Motif
 
   return (
     <div
-      className={`min-w-[200px] rounded-xl border-2 bg-[#0a0a0a] transition-all duration-300 ${getStatusColor(data.status)}`}
+      className={cn(
+        'min-w-[200px] rounded-xl border-2 bg-[#0a0a0a] transition-all duration-300',
+        getStatusColor(data.status),
+      )}
     >
       {targetPosition && data.hasInput ? (
-       <Handle type="target" position={targetPosition} className="!h-3 !w-3 !bg-gray-500" />
+        <Handle
+          type="target"
+          position={targetPosition}
+          className={cn(
+            '!bg-gray-[#0a0a0a] !h-3 !w-3 !border-2 !transition-all',
+            getStatusColor(data.status, true, 'input'),
+          )}
+        />
       ) : null}
 
       {/* Header */}
@@ -70,12 +86,26 @@ const MotifStepNode = ({ data, sourcePosition, targetPosition }: NodeProps<Motif
 
         {/* Status Badge */}
         <div
-          className={`mt-2 w-fit rounded-full px-2 py-1 text-[10px] font-bold tracking-wider uppercase ${data.status === 'idle' ? 'bg-gray-800 text-gray-500' : ''} ${data.status === 'transitionIn' ? 'bg-yellow-500/20 text-yellow-400' : ''} ${data.status === 'ready' ? 'bg-green-500/20 text-green-400' : ''} ${data.status === 'transitionOut' ? 'bg-blue-500/20 text-blue-400' : ''} `}
+          className={cn('mt-2 w-fit rounded-full px-2 py-1 text-[10px] font-bold tracking-wider uppercase', {
+            'bg-gray-800 text-gray-500': data.status === 'idle',
+            'bg-yellow-500/20 text-yellow-400': data.status === 'transitionIn',
+            'bg-green-500/20 text-green-400': data.status === 'ready',
+            'bg-blue-500/20 text-blue-400': data.status === 'transitionOut',
+          })}
         >
           {getStatusLabel(data.status)}
         </div>
       </div>
-      {sourcePosition ? <Handle type="source" position={sourcePosition} className="!h-3 !w-3 !bg-gray-500" /> : null}
+      {sourcePosition && data.hasOutput ? (
+        <Handle
+          type="source"
+          position={sourcePosition}
+          className={cn(
+            '!bg-gray-[#0a0a0a] !h-3 !w-3 !border-2 !transition-all',
+            getStatusColor(data.status, true, 'output'),
+          )}
+        />
+      ) : null}
     </div>
   );
 };

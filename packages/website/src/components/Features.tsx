@@ -1,5 +1,6 @@
 'use client';
 
+import { cn } from '@/lib/cn';
 import { GitMerge, History, LayoutTemplate, Terminal } from 'lucide-react';
 import { motion } from 'motion/react';
 
@@ -69,12 +70,16 @@ export default function Features() {
               className="group flex flex-col items-start gap-3 rounded-xl p-4 transition-colors"
             >
               <h3
-                className={`inline-flex items-center gap-2 text-lg font-semibold ${feature.color} ${feature.bg} rounded-xl px-6 py-1`}
+                className={cn(
+                  'inline-flex items-center gap-2 rounded-xl px-6 py-1 text-lg font-semibold',
+                  feature.color,
+                  feature.bg,
+                )}
               >
                 <feature.icon className="h-5 w-5" />
                 {feature.title}
               </h3>
-              <code className={`text-sm ${feature.color}`}>{feature.packageName}</code>
+              <code className={cn('text-sm', feature.color)}>{feature.packageName}</code>
               <p className="text-sm leading-relaxed text-gray-400">{feature.description}</p>
             </motion.div>
           ))}

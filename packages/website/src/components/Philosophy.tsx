@@ -1,6 +1,7 @@
 'use client';
 
-import { Brain, Layers, LocateFixed, Package, ShieldCheck, Workflow } from 'lucide-react';
+import { cn } from '@/lib/cn';
+import { Bot, Layers, LocateFixed, Package, ShieldCheck, Workflow } from 'lucide-react';
 import { motion } from 'motion/react';
 
 const PHILOSOPHY_ITEMS = [
@@ -48,7 +49,7 @@ const PHILOSOPHY_ITEMS = [
     title: 'AI-Friendly',
     description:
       'Co-location makes it easy for AI to understand component purpose and for humans to verify. Future releases will include LLM.txt to guide AI operations.',
-    icon: Brain,
+    icon: Bot,
     color: 'text-sky-400',
     bg: 'bg-sky-500/10',
   },
@@ -89,9 +90,12 @@ export default function Philosophy() {
               className="glass-panel group rounded-2xl border border-white/5 p-8 transition-all hover:border-white/10"
             >
               <div
-                className={`h-12 w-12 rounded-xl ${item.bg} mb-6 flex items-center justify-center transition-transform duration-300 group-hover:scale-110`}
+                className={cn(
+                  'mb-6 flex h-12 w-12 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110',
+                  item.bg,
+                )}
               >
-                <item.icon className={`h-6 w-6 ${item.color}`} />
+                <item.icon className={cn('h-6 w-6', item.color)} />
               </div>
               <h3 className="mb-3 text-xl font-semibold text-white">{item.title}</h3>
               <p className="leading-relaxed text-gray-400">{item.description}</p>

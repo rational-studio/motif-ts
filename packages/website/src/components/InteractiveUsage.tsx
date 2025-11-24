@@ -1,5 +1,6 @@
 'use client';
 
+import { cn } from '@/lib/cn';
 import { Box, Code2, Layers, Terminal } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import { useState } from 'react';
@@ -42,22 +43,24 @@ export default function InteractiveUsage({ blocks }: { blocks: CodeBlock[] }) {
             <button
               key={block.value}
               onClick={() => setActiveTab(block.value)}
-              className={`group flex w-full items-start gap-4 rounded-xl p-4 text-left transition-all duration-300 ${
-                isActive ? 'bg-white/5' : 'hover:bg-white/5'
-              }`}
+              className={cn(
+                'group flex w-full items-start gap-4 rounded-xl p-4 text-left transition-all duration-300',
+                isActive ? 'bg-white/5' : 'hover:bg-white/5',
+              )}
             >
               <div
-                className={`mt-1 rounded-lg p-2 transition-colors ${
-                  isActive
-                    ? `${colors.bg} ${colors.text}`
-                    : `${colors.bg} ${colors.text} opacity-80 group-hover:opacity-100`
-                }`}
+                className={cn(
+                  'mt-1 rounded-lg p-2 transition-colors',
+                  colors.bg,
+                  colors.text,
+                  isActive ? '' : 'opacity-80 group-hover:opacity-100',
+                )}
               >
                 <Icon className="h-5 w-5" />
               </div>
               <div>
                 <h3
-                  className={`mb-1 font-semibold ${isActive ? 'text-white' : 'text-gray-300 group-hover:text-white'}`}
+                  className={cn('mb-1 font-semibold', isActive ? 'text-white' : 'text-gray-300 group-hover:text-white')}
                 >
                   {block.label}
                 </h3>
