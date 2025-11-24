@@ -1,4 +1,3 @@
-// @ts-check
 import { defineConfig } from 'eslint/config';
 import tseslint from 'typescript-eslint';
 
@@ -13,7 +12,6 @@ export default defineConfig({
     ecmaVersion: 2018,
     sourceType: 'module',
     parserOptions: {
-      project: true,
       projectService: true,
       tsconfigRootDir: import.meta.dirname,
     },

@@ -1,4 +1,4 @@
-import { edge } from '../edge';
+import { edge } from '../edge/serializable';
 import { type Edge } from '../edge/type';
 import { CLEANUP_ARRAY_EXECUTED } from '../step/constants';
 import {
@@ -19,6 +19,16 @@ import { handleAsyncError, isPromise, runOutCleanupOnBack, safeInvokeCleanup } f
 import { validateInventory } from './validators';
 
 const noop = () => void 0;
+
+function computeCanGoBack(
+  currentStepInstance: StepInstance<any, any, any, any, any>,
+  edges: Edge<any, any>[],
+  history: Array<{ node: StepInstance<any, any, any, any, any> }>,
+) {
+  const prev = history[history.length - 1];
+  const connecting = prev ? edges.find((e) => e.from === prev.node && e.to === currentStepInstance) : undefined;
+  return !!prev && (!connecting || !connecting.unidirectional);
+}
 
 export function workflow<const Creators extends readonly StepCreatorAny[]>(inventory: Creators): WorkflowAPI<Creators> {
   // #region No need to be serialized for time-traveling
@@ -116,6 +126,7 @@ export function workflow<const Creators extends readonly StepCreatorAny[]>(inven
       setCurrentStep({
         ...currentStep,
         status: 'transitionOut',
+        canGoBack: false,
       });
     }
     if (context) {
@@ -189,18 +200,33 @@ export function workflow<const Creators extends readonly StepCreatorAny[]>(inven
       ...(node.configSchema ? { config: node.config } : {}),
       ...(node.storeApi ? { store: node.storeApi.getState() } : {}),
       next: (output) => {
+        // same as line 288
+        // fixme: refactor
         const validatedOutput = node.outputSchema ? node.outputSchema.parse(output) : undefined;
         const outgoing = edges.filter((e) => e.from === node);
-        const selected: Edge<any, any> | undefined = outgoing[0];
-        if (!selected) {
-          const prevOutCleanups = runExitSequence();
-          history.push({ node, input: inputForNode, outCleanupOnBack: prevOutCleanups });
-          return;
+        // If there are no outgoing edges, end the workflow
+        if (outgoing.length === 0) {
+          runExitSequence();
+          throw new Error('No next step');
         }
-        const nextNode = selected.to;
+        // Try each outgoing edge and pick the first that allows transition
+        let selectedEdge: Edge<any, any> | undefined;
         let nextInput = undefined;
+        for (const e of outgoing) {
+          const res = e.validateTransition(validatedOutput);
+          if (res.allow) {
+            selectedEdge = e;
+            nextInput = res.nextInput;
+            break;
+          }
+        }
+        if (!selectedEdge) {
+          runExitSequence();
+          throw new Error('Transition blocked by edge condition');
+        }
+        const nextNode = selectedEdge.to;
         if (nextNode.inputSchema) {
-          nextInput = nextNode.inputSchema.parse(validatedOutput);
+          nextInput = nextNode.inputSchema.parse(nextInput);
         }
         const prevOutCleanups = runExitSequence();
         history.push({ node, input: inputForNode, outCleanupOnBack: prevOutCleanups });
@@ -233,8 +259,10 @@ export function workflow<const Creators extends readonly StepCreatorAny[]>(inven
       status: 'ready',
       kind: currentStep.instance.kind,
       name: currentStep.instance.name,
+      id: currentStep.instance.id,
       state: api,
       instance: currentStep.instance,
+      canGoBack: computeCanGoBack(currentStep.instance, edges, history),
     });
   };
 
@@ -244,6 +272,8 @@ export function workflow<const Creators extends readonly StepCreatorAny[]>(inven
     isBack: boolean,
     backCleanups: CleanupFn[],
   ) => {
+    let secondPassRebuildCurrent = false;
+
     if (isBack) {
       // execute transitionOut cleanups of the step we are returning to
       // even if none are present yet; late async cleanups will flush immediately
@@ -318,7 +348,11 @@ export function workflow<const Creators extends readonly StepCreatorAny[]>(inven
       outHooks,
       outCleanupOnBack: [],
       effects: [],
-      storeUnsub: noop,
+      storeUnsub: stepInstance.storeApi
+        ? stepInstance.storeApi.subscribe(() => {
+            secondPassRebuildCurrent = true;
+          })
+        : noop,
       currentInput: input,
       version: ++contextVersionCounter,
     };
@@ -330,6 +364,7 @@ export function workflow<const Creators extends readonly StepCreatorAny[]>(inven
         name: stepInstance.name,
         instance: stepInstance,
         state: api,
+        canGoBack: computeCanGoBack(stepInstance, edges, history),
       } as CurrentStepStatus<Creators>);
       return;
     } else {
@@ -339,6 +374,7 @@ export function workflow<const Creators extends readonly StepCreatorAny[]>(inven
         name: stepInstance.name,
         instance: stepInstance,
         state: api,
+        canGoBack: false,
       } as CurrentStepStatus<Creators>);
     }
 
@@ -348,8 +384,8 @@ export function workflow<const Creators extends readonly StepCreatorAny[]>(inven
     // Run initial effects (first render)
     context.effects = processEffects(effectsDefs);
 
+    context.storeUnsub();
     // Subscribe to data layer changes to rebuild on any change
-
     context.storeUnsub = stepInstance.storeApi
       ? stepInstance.storeApi.subscribe(() => {
           rebuildCurrent();
@@ -357,10 +393,15 @@ export function workflow<const Creators extends readonly StepCreatorAny[]>(inven
       : noop;
 
     _ASSERT(currentStep?.status === 'transitionIn', 'currentStep.status must be transitionIn');
-    setCurrentStep({
-      ...currentStep,
-      status: 'ready',
-    });
+    if (secondPassRebuildCurrent) {
+      rebuildCurrent();
+    } else {
+      setCurrentStep({
+        ...currentStep,
+        status: 'ready',
+        canGoBack: computeCanGoBack(currentStep.instance, edges, history),
+      });
+    }
   };
 
   const register = (nodesArg: ReturnType<Creators[number]> | readonly ReturnType<Creators[number]>[]) => {
@@ -477,7 +518,7 @@ export function workflow<const Creators extends readonly StepCreatorAny[]>(inven
     currentStep = undefined;
   };
 
-  const back = () => {
+  const goBack = () => {
     const prev = history.pop();
     if (!prev) {
       return;
@@ -501,7 +542,7 @@ export function workflow<const Creators extends readonly StepCreatorAny[]>(inven
     start,
     getCurrentStep,
     subscribe,
-    back,
+    goBack,
     // For Internal Use
     $$INTERNAL: {
       nodes,

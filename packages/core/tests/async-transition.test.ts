@@ -118,7 +118,7 @@ describe('Async TransitionHook support', () => {
     await delay(20);
     expect(inCleanupCount).toBe(2);
     // transitionOut cleanup runs when navigating back into A
-    o.back();
+    o.goBack();
     await delay(20);
     expect(outCleanupCount).toBe(1);
   });
@@ -152,7 +152,7 @@ describe('Async TransitionHook support', () => {
     s.state.go();
 
     // Now back into A before the async out cleanup resolves
-    o.back();
+    o.goBack();
     // Give resolution time; cleanup should still run once resolved
     await delay(50);
     expect(outCleanupCount).toBe(1);
@@ -190,7 +190,7 @@ describe('Async TransitionHook support', () => {
     s.state.go();
 
     // Back before async cleanup resolves; it must still run exactly once
-    o.back();
+    o.goBack();
     await delay(50);
     expect(executions).toBe(1);
   });

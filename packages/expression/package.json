@@ -2,16 +2,20 @@
   "name": "@motif-ts/expression",
   "version": "0.0.0",
   "description": "JavaScript expression parser and evaluator",
-  "types": "./src/index.ts",
   "exports": {
-    ".": "./src/index.ts"
+    ".": {
+      "types": "./dist/index.d.mts",
+      "default": "./dist/index.mjs"
+    }
   },
   "sideEffects": false,
   "scripts": {
     "test": "vitest run --typecheck",
     "format": "prettier \"**/*.{ts,cjs,mjs,json}\" --write",
     "lint:fix": "eslint \"{src,tests}/**/*.ts\" --fix",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "build": "tsdown --minify",
+    "dev": "tsdown --watch"
   },
   "keywords": [],
   "author": {
@@ -24,11 +28,12 @@
   "devDependencies": {
     "@eslint/js": "^9.39.1",
     "@ianvs/prettier-plugin-sort-imports": "^4.7.0",
-    "@vitest/coverage-v8": "4.0.8",
+    "@vitest/coverage-v8": "4.0.13",
     "eslint": "^9.39.1",
     "prettier": "^3.6.2",
+    "tsdown": "^0.16.6",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.46.3",
-    "vitest": "^4.0.8"
+    "typescript-eslint": "^8.47.0",
+    "vitest": "^4.0.13"
   }
 }

@@ -20,7 +20,6 @@ export default defineConfig([
       ecmaVersion: 2020,
       sourceType: "module",
       parserOptions: {
-        project: true,
         projectService: true,
         tsconfigRootDir: import.meta.dirname,
       },

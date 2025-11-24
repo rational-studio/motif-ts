@@ -25,6 +25,6 @@ describe('UnidirectionalEdge: forward allowed, back blocked', () => {
     assert(sB.kind === 'B');
 
     // Back should throw due to unidirectional edge
-    expect(() => orchestrator.back()).toThrow();
+    expect(() => orchestrator.goBack()).toThrow();
   });
 });

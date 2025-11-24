@@ -1,4 +1,4 @@
-import { type StepCreatorAny, type WorkflowAPI } from '@motif-ts/core';
+import { type CleanupFn, type StepCreatorAny, type StepInstance, type WorkflowAPI } from '@motif-ts/core';
 
 import type {} from '@redux-devtools/extension';
 
@@ -26,7 +26,7 @@ export default function devtoolsMiddleware<const Creators extends readonly StepC
   const {
     getCurrentStep,
     subscribe,
-    $$INTERNAL: { nodes, transitionInto, getCurrentNode, getContext, pauseLifeCycle },
+    $$INTERNAL: { nodes, transitionInto, getCurrentNode, getContext, pauseLifeCycle, history },
   } = workflow;
 
   const { name } = options;
@@ -44,13 +44,16 @@ export default function devtoolsMiddleware<const Creators extends readonly StepC
     currentNodeId: string;
     currentInput: unknown;
     currentState: Record<string, unknown> | undefined;
+    history: {
+      node: StepInstance<any, any, any, any, any>;
+      input: unknown;
+      outCleanupOnBack: CleanupFn[];
+    }[];
   };
 
   function recordAndSend(type: string) {
     const state = buildSnapshot();
-    const stack = new Error().stack;
-    const callerName = findCallerName(stack);
-    devtools.send({ type: `[motif] ${type} ${callerName || ''}` }, state);
+    devtools.send({ type }, state);
   }
 
   function buildSnapshot(): DevtoolsSnapshot {
@@ -62,10 +65,16 @@ export default function devtoolsMiddleware<const Creators extends readonly StepC
       currentNodeId: currentNode.id,
       currentInput: context?.currentInput,
       currentState: currentNode.storeApi?.getState(),
+      history,
     };
   }
 
-  function restoreFromSnapshot({ currentNodeId, currentInput, currentState }: DevtoolsSnapshot) {
+  function restoreFromSnapshot({
+    currentNodeId,
+    currentInput,
+    currentState,
+    history: historyToRestore,
+  }: DevtoolsSnapshot) {
     const nodesById = new Map(Array.from(nodes).map((n) => [n.id, n] as const));
     const targetNode = nodesById.get(currentNodeId);
     // transition into target node
@@ -73,6 +82,8 @@ export default function devtoolsMiddleware<const Creators extends readonly StepC
       if (currentState && targetNode.storeApi) {
         targetNode.storeApi.setState(currentState);
       }
+      history.length = 0;
+      history.push(...historyToRestore);
       transitionInto(targetNode, currentInput, false, []);
     }
   }
@@ -83,14 +94,6 @@ export default function devtoolsMiddleware<const Creators extends readonly StepC
   // Monitor connection status and handle time-travel commands
   // @ts-expect-error
   devtools.subscribe((message: any) => {
-    if (message.type === 'START') {
-      recordAndSend('DEVTOOLS_MONITOR_START');
-      return;
-    }
-    if (message.type === 'STOP') {
-      recordAndSend('DEVTOOLS_MONITOR_STOP');
-      return;
-    }
     if (message.type === 'DISPATCH') {
       const payloadType = message.payload.type;
       switch (payloadType) {
@@ -147,20 +150,18 @@ export default function devtoolsMiddleware<const Creators extends readonly StepC
     if (!isWorkflowRunning) {
       return;
     }
-    const type =
-      currentStep.status === 'transitionIn'
-        ? 'TRANSITION_IN'
-        : currentStep.status === 'ready'
-          ? 'READY'
-          : 'TRANSITION_OUT';
-    recordAndSend(type);
+    if (currentStep.status === 'transitionIn') {
+      recordAndSend(`[${currentStep.kind}]${currentStep.name ? `[${currentStep.name}]` : ''}: Transition In`);
+    } else if (currentStep.status === 'transitionOut') {
+      recordAndSend(`[${currentStep.kind}]${currentStep.name ? `[${currentStep.name}]` : ''}: Transition Out`);
+    } else if (currentStep.status === 'ready') {
+      const stack = new Error().stack;
+      const callerName = findCallerName(stack);
+      recordAndSend(
+        `[${currentStep.kind}]${currentStep.name ? `[${currentStep.name}]` : ''}: ${callerName || 'Ready/Update'}`,
+      );
+    }
   });
 
-  return {
-    ...workflow,
-    back() {
-      workflow.back();
-      recordAndSend('BACK');
-    },
-  };
+  return workflow;
 }

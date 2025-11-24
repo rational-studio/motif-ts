@@ -12,6 +12,7 @@ export type TransitionStatus = 'transitionIn' | 'ready' | 'transitionOut';
 
 export type CurrentStepStatus<Creators extends readonly StepCreatorAny[]> = {
   status: TransitionStatus;
+  canGoBack: boolean;
 } & {
   [K in Creators[number]['kind']]: {
     kind: K;
@@ -77,7 +78,7 @@ export interface WorkflowAPI<Creators extends readonly StepCreatorAny[]> {
   /**
    * Back to the previous step.
    */
-  back(): void;
+  goBack(): void;
   $$INTERNAL: {
     nodes: Set<StepInstance<any, any, any, any, any>>;
     edges: Edge<any, any>[];

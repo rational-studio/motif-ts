@@ -1,4 +1,5 @@
-import { conditionalEdge, step, workflow, type CurrentStep } from '@motif-ts/core';
+import { step, workflow, type CurrentStep } from '@motif-ts/core';
+import { conditionalEdge } from '@motif-ts/core/edge/serializable';
 import { devtools } from '@motif-ts/middleware';
 import { useWorkflow } from '@motif-ts/react';
 import { useState, type ReactNode } from 'react';
@@ -125,13 +126,12 @@ export default function StepsDemo() {
               <ConfirmPanel value={current.state.value} confirm={current.state.confirm} reject={current.state.reject} />
             )}
             {current.status === 'ready' && current.kind === 'Done' && (
-              <DonePanel value={current.state.result.value} back={() => flow.back()} />
+              <DonePanel value={current.state.result.value} back={() => flow.goBack()} />
             )}
             <div className="flex gap-2 pt-2">
               <button
                 className="inline-flex items-center rounded-lg bg-slate-900 px-3.5 py-2 text-white shadow-sm transition-colors hover:bg-slate-800 disabled:opacity-50"
-                onClick={() => flow.back()}
-                disabled={current.status === 'notStarted'}
+                onClick={() => flow.goBack()}
               >
                 后退
               </button>
@@ -226,9 +226,6 @@ function WorkflowChart({
   const status = current.status;
   const isActive = (id: string) => current.status === 'ready' && current.kind === id;
   const isCompleted = (id: string) => {
-    if (current.status === 'notStarted') {
-      return false;
-    }
     if (id === 'Input') {
       return current.status === 'ready' ? current.kind !== 'Input' : true;
     }

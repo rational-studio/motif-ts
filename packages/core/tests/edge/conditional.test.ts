@@ -1,7 +1,8 @@
 import { assert, describe, expect, it } from 'vitest';
 import z from 'zod/v4';
 
-import { conditionalEdge, step, workflow } from '../../src';
+import { step, workflow } from '../../src';
+import { conditionalEdge } from '../../src/edge/serializable';
 
 describe('ConditionalEdge: predicate controls transition', () => {
   it('allows transition when predicate returns true; blocks when false', () => {
@@ -37,7 +38,7 @@ describe('ConditionalEdge: predicate controls transition', () => {
     expect(sB.state.id()).toBe(3);
 
     // Go back to A, then try odd which should be blocked
-    orchestrator.back();
+    orchestrator.goBack();
     const sA2 = orchestrator.getCurrentStep();
     assert(sA2.kind === 'Emitter');
     sA2.state.emitEven();

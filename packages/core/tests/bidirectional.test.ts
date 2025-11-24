@@ -81,7 +81,7 @@ describe('motif-ts Workflow bidirectional transitions and cleanup', () => {
     assert(stepB.kind === 'B');
 
     // Back to A
-    orchestrator.back();
+    orchestrator.goBack();
     const stepA2 = orchestrator.getCurrentStep();
     assert(stepA2.kind === 'A');
 

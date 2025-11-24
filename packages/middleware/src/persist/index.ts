@@ -1,5 +1,5 @@
-import { conditionalEdge, edge, transformEdge, type StepCreatorAny, type WorkflowAPI } from '@motif-ts/core';
-import { type DeserializableEdgeFunc } from '@motif-ts/core/src/edge/type';
+import { type DeserializableEdgeFunc, type StepCreatorAny, type WorkflowAPI } from '@motif-ts/core';
+import { conditionalEdge, edge, transformEdge } from '@motif-ts/core/edge/serializable';
 import { type z } from 'zod/v4';
 
 import { type SchemaBasic, type SchemaFullState } from './constants';
@@ -24,7 +24,7 @@ interface PersistAPI {
 export default function devtoolsMiddleware<const Creators extends readonly StepCreatorAny[]>(
   workflow: WorkflowAPI<Creators>,
 ): WorkflowAPI<Creators> & PersistAPI {
-  const { start, register, connect, getCurrentStep, subscribe, back, $$INTERNAL } = workflow;
+  const { start, register, connect, getCurrentStep, subscribe, goBack, $$INTERNAL } = workflow;
 
   const edgeInventoryMap = new Map<string, DeserializableEdgeFunc>([
     ['default', edge],
@@ -53,7 +53,7 @@ export default function devtoolsMiddleware<const Creators extends readonly StepC
     start,
     getCurrentStep,
     subscribe,
-    back,
+    goBack,
     $$INTERNAL,
     exportWorkflow,
     importWorkflow,

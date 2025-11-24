@@ -28,7 +28,7 @@ export default function loggerMiddleware<const Creators extends readonly StepCre
   workflow: WorkflowAPI<Creators>,
   options: LoggerOptions = {},
 ): WorkflowAPI<Creators> {
-  const { connect, getCurrentStep, subscribe, back, $$INTERNAL } = workflow;
+  const { connect, getCurrentStep, subscribe, goBack, $$INTERNAL } = workflow;
 
   const prefix = options.prefix ?? '[motif] ';
   const palette = options.palette;
@@ -65,9 +65,9 @@ export default function loggerMiddleware<const Creators extends readonly StepCre
     },
     getCurrentStep,
     subscribe,
-    back() {
+    goBack() {
       log('Back');
-      return back();
+      return goBack();
     },
     $$INTERNAL,
   } satisfies WorkflowAPI<Creators>;

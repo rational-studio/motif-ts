@@ -2,12 +2,16 @@
   "name": "motif-ts-monorepo",
   "private": true,
   "scripts": {
-    "motif": "pnpm --filter motif-ts",
-    "test:all": "pnpm -r test",
-    "format:all": "pnpm -r lint:fix && pnpm -r format"
+    "build": "turbo run build",
+    "dev": "turbo run dev --parallel",
+    "test": "turbo run test",
+    "lint:fix": "turbo run lint:fix",
+    "format": "turbo run format",
+    "type-check": "turbo run type-check"
   },
   "devDependencies": {
-    "pnpm": "^10.20.0"
+    "pnpm": "^10.20.0",
+    "turbo": "^2.6.1"
   },
-  "packageManager": "pnpm@10.21.0"
+  "packageManager": "pnpm@10.23.0"
 }

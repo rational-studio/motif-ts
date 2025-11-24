@@ -39,7 +39,7 @@ export const conditionalEdge = createSerializableEdge(
   ) => {
     const compiled = expression(predicateExprSrc);
     return {
-      kind: 'conditional',
+      kind: 'conditional-serializable',
       from,
       to,
       unidirectional,
@@ -71,7 +71,7 @@ export const transformEdge = createSerializableEdge(
   ) => {
     const compiled = expression(transformExprSrc);
     return {
-      kind: 'transform',
+      kind: 'transform-serializable',
       from,
       to,
       unidirectional,

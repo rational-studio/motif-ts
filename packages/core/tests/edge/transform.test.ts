@@ -1,7 +1,8 @@
 import { assert, describe, expect, it } from 'vitest';
 import z from 'zod/v4';
 
-import { step, transformEdge, workflow } from '../../src';
+import { step, workflow } from '../../src';
+import { transformEdge } from '../../src/edge/serializable';
 
 describe('TransformEdge: converts A output to B input type', () => {
   it('supports inline converter and registered converter', () => {

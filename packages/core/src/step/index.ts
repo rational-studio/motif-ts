@@ -214,7 +214,7 @@ export function step<
   build: (args: BuildArgs<Input, Output, Config, Store>) => Api,
 ) {
   function createInstance(nameOrConfigArg?: unknown, configArg?: unknown) {
-    const nameValue = typeof nameOrConfigArg === 'string' ? nameOrConfigArg : 'default';
+    const nameValue = typeof nameOrConfigArg === 'string' ? nameOrConfigArg : '';
     const configValue = def.configSchema
       ? configArg
         ? def.configSchema.parse(configArg)
@@ -226,7 +226,7 @@ export function step<
     const instance: StepInstance<Input, Output, Config, Api, Store> = {
       kind: def.kind,
       name: nameValue,
-      id: `${def.kind}_${nameValue}`,
+      id: nameValue ? `${def.kind}:${nameValue}` : def.kind,
       inputSchema: def.inputSchema,
       outputSchema: def.outputSchema,
       configSchema: def.configSchema,

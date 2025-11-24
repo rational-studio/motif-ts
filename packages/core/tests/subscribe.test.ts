@@ -142,7 +142,7 @@ describe('Workflow.subscribe notifications', () => {
     const stepT = orchestrator.getCurrentStep();
     assert(stepT.kind === 'T');
 
-    orchestrator.back();
+    orchestrator.goBack();
 
     expect(events).toEqual([
       { kind: 'S', name: 's1', status: 'transitionIn' },
