@@ -2,7 +2,7 @@
 
 import { cn } from '@/lib/cn';
 import { Database } from 'lucide-react';
-import { memo } from 'react';
+import { memo, useMemo } from 'react';
 import { Handle, NodeProps } from 'reactflow';
 
 export type MotifStepData = {
@@ -11,11 +11,28 @@ export type MotifStepData = {
   outputSchema?: string;
   status?: 'idle' | 'transitionIn' | 'ready' | 'transitionOut';
   hasStore?: boolean;
-  hasInput?: boolean;
-  hasOutput?: boolean;
 };
 
 const MotifStepNode = ({ data, sourcePosition, targetPosition }: NodeProps<MotifStepData>) => {
+  // Determine if handles should exist based on schema
+  const shouldHaveInput = useMemo(() => {
+    return (
+      !!data.inputSchema &&
+      data.inputSchema !== 'void' &&
+      data.inputSchema !== 'z.void()' &&
+      data.inputSchema.trim() !== ''
+    );
+  }, [data.inputSchema]);
+
+  const shouldHaveOutput = useMemo(() => {
+    return (
+      !!data.outputSchema &&
+      data.outputSchema !== 'void' &&
+      data.outputSchema !== 'z.void()' &&
+      data.outputSchema.trim() !== ''
+    );
+  }, [data.outputSchema]);
+
   const getStatusColor = (s?: string, important?: boolean, state: 'input' | 'output' | 'both' = 'both') => {
     if (s === 'transitionIn' && (state === 'input' || state === 'both')) {
       return important
@@ -50,16 +67,16 @@ const MotifStepNode = ({ data, sourcePosition, targetPosition }: NodeProps<Motif
   return (
     <div
       className={cn(
-        'min-w-[200px] rounded-xl border-2 bg-[#0a0a0a] transition-all duration-300',
+        'min-w-[200px] rounded-xl border-2 bg-background transition-all duration-300',
         getStatusColor(data.status),
       )}
     >
-      {targetPosition && data.hasInput ? (
+      {targetPosition && shouldHaveInput ? (
         <Handle
           type="target"
           position={targetPosition}
           className={cn(
-            '!bg-gray-[#0a0a0a] !h-3 !w-3 !border-2 !transition-all',
+            '!bg-gray-[#0a0a0a] h-3! w-3! border-2! transition-all!',
             getStatusColor(data.status, true, 'input'),
           )}
         />
@@ -96,12 +113,12 @@ const MotifStepNode = ({ data, sourcePosition, targetPosition }: NodeProps<Motif
           {getStatusLabel(data.status)}
         </div>
       </div>
-      {sourcePosition && data.hasOutput ? (
+      {sourcePosition && shouldHaveOutput ? (
         <Handle
           type="source"
           position={sourcePosition}
           className={cn(
-            '!bg-gray-[#0a0a0a] !h-3 !w-3 !border-2 !transition-all',
+            'h-3! w-3! border-2! bg-background! transition-all!',
             getStatusColor(data.status, true, 'output'),
           )}
         />

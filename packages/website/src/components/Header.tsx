@@ -14,7 +14,7 @@ export default function Header() {
       </a>
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
         <Link href="#" className="group flex items-center gap-2" aria-label="Motif-ts Home">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 text-lg font-bold text-white shadow-lg shadow-blue-500/20 transition-all group-hover:shadow-blue-500/40">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-linear-to-br from-blue-500 to-purple-600 text-lg font-bold text-white shadow-lg shadow-blue-500/20 transition-all group-hover:shadow-blue-500/40">
             M
           </div>
           <span className="text-xl font-bold tracking-tight text-white">motif-ts</span>

@@ -4,6 +4,9 @@ import { cn } from '@/lib/cn';
 import { Bot, Layers, LocateFixed, Package, ShieldCheck, Workflow } from 'lucide-react';
 import { motion } from 'motion/react';
 
+import ZodLogo from './ZodLogo';
+import ZustandLogo from './ZustandLogo';
+
 const PHILOSOPHY_ITEMS = [
   {
     title: 'Workflows as Graphs',
@@ -20,6 +23,10 @@ const PHILOSOPHY_ITEMS = [
     icon: ShieldCheck,
     color: 'text-green-400',
     bg: 'bg-green-500/10',
+    poweredBy: {
+      name: 'Zod',
+      logo: ZodLogo,
+    },
   },
   {
     title: 'Immutability',
@@ -28,11 +35,15 @@ const PHILOSOPHY_ITEMS = [
     icon: Package,
     color: 'text-orange-400',
     bg: 'bg-orange-500/10',
+    poweredBy: {
+      name: 'Zustand',
+      logo: ZustandLogo,
+    },
   },
   {
-    title: 'Colocation',
+    title: 'Co-location',
     description:
-      'Keep your logic, types, and UI close together. Steps are self-contained units that are easy to reason about, test, and reuse across your application.',
+      'Achieve clear separation of concerns by decoupling UI from business logic. By co-locating logic with its relevant components, you ensure that business rules remain pure, testable, and independent of the view layer.',
     icon: LocateFixed,
     color: 'text-purple-400',
     bg: 'bg-purple-500/10',
@@ -48,7 +59,7 @@ const PHILOSOPHY_ITEMS = [
   {
     title: 'AI-Friendly',
     description:
-      'Co-location makes it easy for AI to understand component purpose and for humans to verify. Future releases will include LLM.txt to guide AI operations.',
+      'Built for the AI era. The co-located structure allows AI to precisely target and modify specific logic blocks with high confidence. This isolation makes AI-generated changes transparent, safe, and easy for humans to verify.',
     icon: Bot,
     color: 'text-sky-400',
     bg: 'bg-sky-500/10',
@@ -71,7 +82,7 @@ export default function Philosophy() {
           viewport={{ once: true }}
           className="mb-16 text-center"
         >
-          <h2 className="mb-6 bg-gradient-to-b from-white to-white/60 bg-clip-text text-3xl font-bold tracking-tight text-transparent md:text-5xl">
+          <h2 className="mb-6 bg-linear-to-b from-white to-white/60 bg-clip-text text-3xl font-bold tracking-tight text-transparent md:text-5xl">
             Core Philosophy
           </h2>
           <p className="mx-auto max-w-2xl text-lg text-gray-400">
@@ -87,7 +98,7 @@ export default function Philosophy() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
-              className="glass-panel group rounded-2xl border border-white/5 p-8 transition-all hover:border-white/10"
+              className="glass-panel group flex flex-col rounded-2xl border border-white/5 p-8 transition-all hover:border-white/10"
             >
               <div
                 className={cn(
@@ -99,6 +110,18 @@ export default function Philosophy() {
               </div>
               <h3 className="mb-3 text-xl font-semibold text-white">{item.title}</h3>
               <p className="leading-relaxed text-gray-400">{item.description}</p>
+
+              {item.poweredBy && (
+                <div className="mt-auto pt-6">
+                  <div className="flex items-center gap-2 text-sm text-gray-500">
+                    <span>Powered by</span>
+                    <div className="flex items-center gap-1.5 text-gray-300">
+                      <item.poweredBy.logo className="h-5 w-5" />
+                      <span className="font-medium">{item.poweredBy.name}</span>
+                    </div>
+                  </div>
+                </div>
+              )}
             </motion.div>
           ))}
         </div>

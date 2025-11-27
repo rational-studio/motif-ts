@@ -17,7 +17,7 @@ import {
 } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
-import ReactFlow, { Background, Controls, Edge, MarkerType, Node, useEdgesState, useNodesState } from 'reactflow';
+import ReactFlow, { Background, Edge, MarkerType, Node, useEdgesState, useNodesState } from 'reactflow';
 import { createHighlighter, type Highlighter } from 'shiki';
 
 import 'reactflow/dist/style.css';
@@ -188,7 +188,7 @@ const CodeBlock = ({ code }: { code: string }) => {
 
   return (
     <div
-      className="font-mono text-sm leading-relaxed whitespace-pre [&>pre]:!bg-transparent [&>pre]:!p-0"
+      className="font-mono text-sm leading-relaxed whitespace-pre [&>pre]:bg-transparent! [&>pre]:p-0!"
       dangerouslySetInnerHTML={{ __html: html }}
     />
   );
@@ -527,7 +527,7 @@ ${connections}
           viewport={{ once: true }}
           className="mb-16 text-center"
         >
-          <h2 className="mb-6 bg-gradient-to-b from-white to-white/60 bg-clip-text text-3xl font-bold tracking-tight text-transparent md:text-5xl">
+          <h2 className="mb-6 bg-linear-to-b from-white to-white/60 bg-clip-text text-3xl font-bold tracking-tight text-transparent md:text-5xl">
             Build in Seconds
           </h2>
           <p className="mx-auto max-w-2xl text-lg text-gray-400">
@@ -661,9 +661,9 @@ ${connections}
                   </button>
                 </div>
 
-                <div className="relative flex flex-1 items-center justify-center bg-gradient-to-br from-gray-900 to-black p-8">
+                <div className="relative flex flex-1 items-center justify-center bg-linear-to-br from-gray-900 to-black p-8">
                   {/* Mobile Device Frame */}
-                  <div className="relative mx-auto flex h-[630px] w-[300px] flex-col overflow-hidden rounded-[3rem] border-[12px] border-gray-800 bg-gray-900 shadow-2xl ring-1 ring-white/5">
+                  <div className="relative mx-auto flex h-[630px] w-[300px] flex-col overflow-hidden rounded-[3rem] border-12 border-gray-800 bg-gray-900 shadow-2xl ring-1 ring-white/5">
                     {/* Status Bar */}
                     <div className="z-10 flex h-12 w-full items-center justify-between px-6 pt-4 text-[10px] text-white">
                       <span className="pl-1 font-medium">9:41</span>
@@ -691,9 +691,9 @@ ${connections}
                             initial={{ x: 50, opacity: 0 }}
                             animate={{ x: 0, opacity: 1 }}
                             exit={{ x: -50, opacity: 0 }}
-                            className="absolute inset-0 flex flex-col justify-center bg-gradient-to-b from-gray-900 to-black p-6"
+                            className="absolute inset-0 flex flex-col justify-center bg-linear-to-b from-gray-900 to-black p-6"
                           >
-                            <div className="mb-8 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-tr from-blue-600 to-purple-600 shadow-lg shadow-blue-500/20">
+                            <div className="mb-8 flex h-16 w-16 items-center justify-center rounded-2xl bg-linear-to-tr from-blue-600 to-purple-600 shadow-lg shadow-blue-500/20">
                               <Mail className="h-8 w-8 text-white" />
                             </div>
                             <h2 className="mb-2 text-2xl font-bold text-white">Welcome Back</h2>
@@ -751,9 +751,9 @@ ${connections}
                             initial={{ x: 50, opacity: 0 }}
                             animate={{ x: 0, opacity: 1 }}
                             exit={{ x: -50, opacity: 0 }}
-                            className="absolute inset-0 flex flex-col justify-center bg-gradient-to-b from-gray-900 to-black p-6"
+                            className="absolute inset-0 flex flex-col justify-center bg-linear-to-b from-gray-900 to-black p-6"
                           >
-                            <div className="mb-8 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-tr from-purple-600 to-pink-600 shadow-lg shadow-purple-500/20">
+                            <div className="mb-8 flex h-16 w-16 items-center justify-center rounded-2xl bg-linear-to-tr from-purple-600 to-pink-600 shadow-lg shadow-purple-500/20">
                               <User className="h-8 w-8 text-white" />
                             </div>
                             <h2 className="mb-2 text-2xl font-bold text-white">Your Profile</h2>
@@ -804,9 +804,9 @@ ${connections}
                             initial={{ x: 50, opacity: 0 }}
                             animate={{ x: 0, opacity: 1 }}
                             exit={{ x: -50, opacity: 0 }}
-                            className="absolute inset-0 flex flex-col justify-center bg-gradient-to-b from-gray-900 to-black p-6"
+                            className="absolute inset-0 flex flex-col justify-center bg-linear-to-b from-gray-900 to-black p-6"
                           >
-                            <div className="mb-8 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-tr from-green-600 to-teal-600 shadow-lg shadow-green-500/20">
+                            <div className="mb-8 flex h-16 w-16 items-center justify-center rounded-2xl bg-linear-to-tr from-green-600 to-teal-600 shadow-lg shadow-green-500/20">
                               <CreditCard className="h-8 w-8 text-white" />
                             </div>
                             <h2 className="mb-2 text-2xl font-bold text-white">Select Plan</h2>
@@ -834,7 +834,7 @@ ${connections}
                             key="success"
                             initial={{ scale: 0.9, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
-                            className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-b from-green-950/30 to-black p-6 text-center"
+                            className="absolute inset-0 flex flex-col items-center justify-center bg-linear-to-b from-green-950/30 to-black p-6 text-center"
                           >
                             <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-green-500/10 ring-1 ring-green-500/20">
                               <Check className="h-10 w-10 text-green-500" />

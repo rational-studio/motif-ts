@@ -55,7 +55,7 @@ export default function Features() {
           viewport={{ once: true }}
           className="mb-16 text-center"
         >
-          <h2 className="mb-6 bg-gradient-to-b from-white to-white/60 bg-clip-text text-3xl font-bold tracking-tight text-transparent md:text-5xl">
+          <h2 className="mb-6 bg-linear-to-b from-white to-white/60 bg-clip-text text-3xl font-bold tracking-tight text-transparent md:text-5xl">
             Everything you need to drive workflows
           </h2>
           <p className="mx-auto max-w-2xl text-lg text-gray-400">
