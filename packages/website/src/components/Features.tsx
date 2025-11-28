@@ -4,6 +4,8 @@ import { cn } from '@/lib/cn';
 import { GitMerge, History, LayoutTemplate, Terminal } from 'lucide-react';
 import { motion } from 'motion/react';
 
+import SectionHeading from './SectionHeading';
+
 const FEATURES = [
   {
     title: 'Workflow Orchestrator',
@@ -49,19 +51,10 @@ export default function Features() {
   return (
     <section id="features" className="relative px-6 py-24">
       <div className="mx-auto max-w-7xl">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="mb-16 text-center"
-        >
-          <h2 className="mb-6 bg-linear-to-b from-white to-white/60 bg-clip-text text-3xl font-bold tracking-tight text-transparent md:text-5xl">
-            Everything you need to drive workflows
-          </h2>
-          <p className="mx-auto max-w-2xl text-lg text-gray-400">
-            Powerful primitives for building complex application workflows with confidence.
-          </p>
-        </motion.div>
+        <SectionHeading
+          title="Everything you need to drive workflows"
+          description="Powerful primitives for building complex application workflows with confidence."
+        />
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
           {FEATURES.map((feature, index) => (
@@ -71,11 +64,11 @@ export default function Features() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
-              className="group flex flex-col items-start gap-3 rounded-xl p-4 transition-colors"
+              className="flex flex-col items-start gap-6 rounded-xl p-4 transition-colors"
             >
               <h3
                 className={cn(
-                  'inline-flex items-center gap-2 rounded-xl px-6 py-1 text-lg font-semibold',
+                  'inline-flex items-center gap-2 rounded-xl px-6 py-3 font-semibold',
                   feature.color,
                   feature.bg,
                 )}
@@ -85,12 +78,14 @@ export default function Features() {
               </h3>
 
               <p className="text-sm leading-relaxed text-gray-400">{feature.description}</p>
-              {feature.packageName.map((packageName, index) => (
-                <code className={cn('text-sm', packageName.active ? feature.color : 'text-gray-400')} key={index}>
-                  {packageName.name}
-                  {packageName.active ? null : <span className="text-gray-600">(coming soon)</span>}
-                </code>
-              ))}
+              <div className="flex flex-col gap-3">
+                {feature.packageName.map((packageName, index) => (
+                  <code className={cn('text-sm', packageName.active ? feature.color : 'text-gray-400')} key={index}>
+                    {packageName.name}
+                    {packageName.active ? null : <span className="text-gray-600">(coming soon)</span>}
+                  </code>
+                ))}
+              </div>
             </motion.div>
           ))}
         </div>

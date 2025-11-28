@@ -5,6 +5,8 @@ import { Box, Code2, Layers, Terminal } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import { useState } from 'react';
 
+import GlassPanel from './GlassPanel';
+
 type CodeBlock = {
   label: string;
   value: string;
@@ -73,7 +75,7 @@ export default function InteractiveUsage({ blocks }: { blocks: CodeBlock[] }) {
 
       {/* Code Window */}
       <div className="lg:col-span-3">
-        <div className="glass-panel flex h-full min-h-[400px] flex-col overflow-hidden rounded-2xl border border-gray-800">
+        <GlassPanel className="flex h-full min-h-[400px] flex-col overflow-hidden border-gray-800">
           {/* Window Header */}
           <div className="flex items-center justify-between border-b border-gray-800 bg-black/20 px-4 py-3">
             <div className="flex gap-2">
@@ -101,7 +103,7 @@ export default function InteractiveUsage({ blocks }: { blocks: CodeBlock[] }) {
               />
             </AnimatePresence>
           </div>
-        </div>
+        </GlassPanel>
       </div>
     </div>
   );

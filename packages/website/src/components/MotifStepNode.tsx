@@ -2,8 +2,8 @@
 
 import { cn } from '@/lib/cn';
 import { Database } from 'lucide-react';
-import { memo, useMemo } from 'react';
-import { Handle, NodeProps } from 'reactflow';
+import { useMemo } from 'react';
+import { Handle, NodeProps, Position } from 'reactflow';
 
 export type MotifStepData = {
   label: string;
@@ -13,7 +13,7 @@ export type MotifStepData = {
   hasStore?: boolean;
 };
 
-const MotifStepNode = ({ data, sourcePosition, targetPosition }: NodeProps<MotifStepData>) => {
+const MotifStepNode = ({ data }: NodeProps<MotifStepData>) => {
   // Determine if handles should exist based on schema
   const shouldHaveInput = useMemo(() => {
     return (
@@ -71,16 +71,17 @@ const MotifStepNode = ({ data, sourcePosition, targetPosition }: NodeProps<Motif
         getStatusColor(data.status),
       )}
     >
-      {targetPosition && shouldHaveInput ? (
-        <Handle
-          type="target"
-          position={targetPosition}
-          className={cn(
-            '!bg-gray-[#0a0a0a] h-3! w-3! border-2! transition-all!',
-            getStatusColor(data.status, true, 'input'),
-          )}
-        />
-      ) : null}
+      {/* {targetPosition && shouldHaveInput ? ( */}
+      <Handle
+        type="target"
+        position={Position.Left}
+        isConnectable={true}
+        className={cn(
+          '!bg-gray-[#0a0a0a] h-3! w-3! border-2! transition-all!',
+          getStatusColor(data.status, true, 'input'),
+        )}
+      />
+      {/* ) : null} */}
 
       {/* Header */}
       <div className="flex items-center justify-between rounded-t-xl border-b border-gray-800 bg-gray-900/50 p-3">
@@ -113,18 +114,19 @@ const MotifStepNode = ({ data, sourcePosition, targetPosition }: NodeProps<Motif
           {getStatusLabel(data.status)}
         </div>
       </div>
-      {sourcePosition && shouldHaveOutput ? (
-        <Handle
-          type="source"
-          position={sourcePosition}
-          className={cn(
-            'h-3! w-3! border-2! bg-background! transition-all!',
-            getStatusColor(data.status, true, 'output'),
-          )}
-        />
-      ) : null}
+      {/* {sourcePosition && shouldHaveOutput ? ( */}
+      <Handle
+        type="source"
+        position={Position.Right}
+        isConnectable={true}
+        className={cn(
+          'h-3! w-3! border-2! bg-background! transition-all!',
+          getStatusColor(data.status, true, 'output'),
+        )}
+      />
+      {/* ) : null} */}
     </div>
   );
 };
 
-export default memo(MotifStepNode);
+export default MotifStepNode;

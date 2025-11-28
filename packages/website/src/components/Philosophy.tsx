@@ -1,9 +1,9 @@
 'use client';
 
-import { cn } from '@/lib/cn';
 import { Bot, Layers, LocateFixed, Package, ShieldCheck, Workflow } from 'lucide-react';
-import { motion } from 'motion/react';
 
+import FeatureCard from './FeatureCard';
+import SectionHeading from './SectionHeading';
 import ZodLogo from './ZodLogo';
 import ZustandLogo from './ZustandLogo';
 
@@ -76,53 +76,33 @@ export default function Philosophy() {
       </div>
 
       <div className="relative z-10 mx-auto max-w-7xl">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="mb-16 text-center"
-        >
-          <h2 className="mb-6 bg-linear-to-b from-white to-white/60 bg-clip-text text-3xl font-bold tracking-tight text-transparent md:text-5xl">
-            Core Philosophy
-          </h2>
-          <p className="mx-auto max-w-2xl text-lg text-gray-400">
-            Built on first principles to solve the complexity of state management and workflow orchestration.
-          </p>
-        </motion.div>
+        <SectionHeading
+          title="Core Philosophy"
+          description="Built on first principles to solve the complexity of state management and workflow orchestration."
+        />
 
         <div className="grid gap-6 md:grid-cols-2">
           {PHILOSOPHY_ITEMS.map((item, index) => (
-            <motion.div
+            <FeatureCard
               key={item.title}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
-              className="glass-panel group flex flex-col rounded-2xl border border-white/5 p-8 transition-all hover:border-white/10"
-            >
-              <div
-                className={cn(
-                  'mb-6 flex h-12 w-12 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110',
-                  item.bg,
-                )}
-              >
-                <item.icon className={cn('h-6 w-6', item.color)} />
-              </div>
-              <h3 className="mb-3 text-xl font-semibold text-white">{item.title}</h3>
-              <p className="leading-relaxed text-gray-400">{item.description}</p>
-
-              {item.poweredBy && (
-                <div className="mt-auto pt-6">
+              title={item.title}
+              description={item.description}
+              icon={item.icon}
+              iconColor={item.color}
+              iconBg={item.bg}
+              delay={index * 0.1}
+              footer={
+                item.poweredBy && (
                   <div className="flex items-center gap-2 text-sm text-gray-500">
-                    <span>Powered by</span>
+                    <span className="text-xxs font-semibold tracking-widest uppercase">Powered by</span>
                     <div className="flex items-center gap-1.5 text-gray-300">
                       <item.poweredBy.logo className="h-5 w-5" />
                       <span className="font-medium">{item.poweredBy.name}</span>
                     </div>
                   </div>
-                </div>
-              )}
-            </motion.div>
+                )
+              }
+            />
           ))}
         </div>
       </div>

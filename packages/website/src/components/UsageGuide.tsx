@@ -1,6 +1,7 @@
 import { highlight } from '@/lib/shiki';
 
 import InteractiveUsage from './InteractiveUsage';
+import SectionHeading from './SectionHeading';
 
 export default async function UsageGuide() {
   const installCode = `pnpm add @motif-ts/core @motif-ts/react`;
@@ -93,14 +94,10 @@ export function SignupForm() {
   return (
     <section className="relative px-6 py-24" id="usage">
       <div className="mx-auto max-w-7xl">
-        <div className="mb-16 text-center">
-          <h2 className="mb-6 bg-linear-to-b from-white to-white/60 bg-clip-text text-3xl font-bold tracking-tight text-transparent md:text-5xl">
-            Detailed Usage Guide
-          </h2>
-          <p className="mx-auto max-w-2xl text-lg text-gray-400">
-            Step-by-step instructions to get you up and running.
-          </p>
-        </div>
+        <SectionHeading
+          title="Detailed Usage Guide"
+          description="Step-by-step instructions to get you up and running."
+        />
         <InteractiveUsage blocks={blocks} />
       </div>
     </section>

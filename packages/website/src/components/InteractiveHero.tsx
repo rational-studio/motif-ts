@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import ReactFlow, { Background, Edge, Node, Position, useEdgesState, useNodesState } from 'reactflow';
+import ReactFlow, { Background, Edge, Node, useEdgesState, useNodesState } from 'reactflow';
 
 import 'reactflow/dist/style.css';
 
@@ -9,6 +9,8 @@ import { cn } from '@/lib/cn';
 import { ArrowRight } from 'lucide-react';
 import { motion } from 'motion/react';
 
+import Button from './Button';
+import GlassPanel from './GlassPanel';
 import MotifStepNode, { MotifStepData } from './MotifStepNode';
 
 const nodeTypes = {
@@ -26,8 +28,6 @@ const initialNodes: Node<MotifStepData>[] = [
       status: 'idle',
     },
     position: { x: 0, y: 200 },
-    sourcePosition: Position.Right,
-    targetPosition: Position.Left,
   },
   {
     id: '2',
@@ -39,8 +39,6 @@ const initialNodes: Node<MotifStepData>[] = [
       status: 'idle',
     },
     position: { x: 250, y: 200 },
-    sourcePosition: Position.Right,
-    targetPosition: Position.Left,
   },
   {
     id: '3',
@@ -53,8 +51,6 @@ const initialNodes: Node<MotifStepData>[] = [
       status: 'idle',
     },
     position: { x: 500, y: 50 },
-    sourcePosition: Position.Right,
-    targetPosition: Position.Left,
   },
   {
     id: '4',
@@ -66,8 +62,6 @@ const initialNodes: Node<MotifStepData>[] = [
       status: 'idle',
     },
     position: { x: 500, y: 350 },
-    sourcePosition: Position.Right,
-    targetPosition: Position.Left,
   },
   {
     id: '5',
@@ -79,8 +73,6 @@ const initialNodes: Node<MotifStepData>[] = [
       status: 'idle',
     },
     position: { x: 750, y: 50 },
-    sourcePosition: Position.Right,
-    targetPosition: Position.Left,
   },
   {
     id: '6',
@@ -93,8 +85,6 @@ const initialNodes: Node<MotifStepData>[] = [
       status: 'idle',
     },
     position: { x: 750, y: 350 },
-    sourcePosition: Position.Right,
-    targetPosition: Position.Left,
   },
   {
     id: '7',
@@ -106,8 +96,6 @@ const initialNodes: Node<MotifStepData>[] = [
       status: 'idle',
     },
     position: { x: 1000, y: 350 },
-    sourcePosition: Position.Right,
-    targetPosition: Position.Left,
   },
   {
     id: '8',
@@ -119,8 +107,6 @@ const initialNodes: Node<MotifStepData>[] = [
       status: 'idle',
     },
     position: { x: 1250, y: 200 },
-    sourcePosition: Position.Right,
-    targetPosition: Position.Left,
   },
   {
     id: '9',
@@ -132,8 +118,6 @@ const initialNodes: Node<MotifStepData>[] = [
       status: 'idle',
     },
     position: { x: 1500, y: 100 },
-    sourcePosition: Position.Right,
-    targetPosition: Position.Left,
   },
   {
     id: '10',
@@ -145,8 +129,6 @@ const initialNodes: Node<MotifStepData>[] = [
       status: 'idle',
     },
     position: { x: 1500, y: 300 },
-    sourcePosition: Position.Right,
-    targetPosition: Position.Left,
   },
   {
     id: '11',
@@ -159,8 +141,6 @@ const initialNodes: Node<MotifStepData>[] = [
       status: 'idle',
     },
     position: { x: 1750, y: 200 },
-    sourcePosition: Position.Right,
-    targetPosition: Position.Left,
   },
   {
     id: '12',
@@ -172,8 +152,6 @@ const initialNodes: Node<MotifStepData>[] = [
       status: 'idle',
     },
     position: { x: 2000, y: 200 },
-    sourcePosition: Position.Right,
-    targetPosition: Position.Left,
   },
 ];
 
@@ -288,16 +266,19 @@ export default function InteractiveHero() {
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [isRunning, setIsRunning] = useState(false);
 
-  const updateNodeStatus = (id: string, status: MotifStepData['status']) => {
-    setNodes((nds) =>
-      nds.map((node) => {
-        if (node.id === id) {
-          return { ...node, data: { ...node.data, status } };
-        }
-        return node;
-      }),
-    );
-  };
+  const updateNodeStatus = useCallback(
+    (id: string, status: MotifStepData['status']) => {
+      setNodes((nds) =>
+        nds.map((node) => {
+          if (node.id === id) {
+            return { ...node, data: { ...node.data, status } };
+          }
+          return node;
+        }),
+      );
+    },
+    [setNodes],
+  );
 
   const runSimulation = useCallback(async () => {
     if (isRunning) return;
@@ -342,17 +323,23 @@ export default function InteractiveHero() {
     }
 
     setIsRunning(false);
-  }, [setNodes, isRunning]);
+  }, [isRunning, setNodes, updateNodeStatus]);
 
   // Auto-run simulation
   useEffect(() => {
-    runSimulation();
-
     const interval = setInterval(() => {
       runSimulation();
     }, 35000);
 
-    return () => clearInterval(interval);
+    // Initial run after mount
+    const timer = setTimeout(() => {
+      runSimulation();
+    }, 1000);
+
+    return () => {
+      clearInterval(interval);
+      clearTimeout(timer);
+    };
   }, [runSimulation]);
 
   return (
@@ -386,9 +373,9 @@ export default function InteractiveHero() {
           transition={{ duration: 0.8, delay: 0.4 }}
           className="flex justify-center gap-4"
         >
-          <button className="glass-button group flex items-center gap-2 rounded-full px-8 py-3 font-semibold text-white">
-            Get Started <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-          </button>
+          <Button variant="glass" size="lg" className="group rounded-full px-8 py-3">
+            Get Started <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+          </Button>
         </motion.div>
       </div>
 
@@ -397,27 +384,29 @@ export default function InteractiveHero() {
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1, delay: 0.5 }}
-        className="glass-panel relative h-[500px] w-full max-w-6xl overflow-hidden rounded-xl border border-gray-800 shadow-2xl"
+        className="relative h-[500px] w-full max-w-6xl"
       >
-        <ReactFlow
-          nodes={nodes}
-          edges={edges}
-          nodeTypes={nodeTypes}
-          onNodesChange={onNodesChange}
-          onEdgesChange={onEdgesChange}
-          className="pointer-events-none"
-          fitView={true}
-          nodesDraggable={false}
-          nodesConnectable={false}
-          elementsSelectable={false}
-          zoomOnScroll={false}
-          panOnScroll={false}
-          panOnDrag={false}
-          zoomOnDoubleClick={false}
-          proOptions={{ hideAttribution: true }}
-        >
-          <Background color="#333" gap={20} size={1} />
-        </ReactFlow>
+        <GlassPanel className="h-full w-full overflow-hidden border-gray-800 shadow-2xl">
+          <ReactFlow
+            nodes={nodes}
+            edges={edges}
+            nodeTypes={nodeTypes}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
+            className="pointer-events-none"
+            fitView={true}
+            nodesDraggable={false}
+            nodesConnectable={false}
+            elementsSelectable={false}
+            zoomOnScroll={false}
+            panOnScroll={false}
+            panOnDrag={false}
+            zoomOnDoubleClick={false}
+            proOptions={{ hideAttribution: true }}
+          >
+            <Background color="#333" gap={20} size={1} />
+          </ReactFlow>
+        </GlassPanel>
 
         {/* Overlay Badge */}
         <div className="glass-button absolute top-4 right-4 flex items-center gap-2 rounded-full px-3 py-1 text-xs text-gray-400">

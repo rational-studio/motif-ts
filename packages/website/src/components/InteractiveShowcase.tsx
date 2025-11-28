@@ -25,7 +25,10 @@ import 'reactflow/dist/style.css';
 import { cn } from '@/lib/cn';
 import { z } from 'zod';
 
+import Button from './Button';
+import GlassPanel from './GlassPanel';
 import MotifStepNode, { MotifStepData } from './MotifStepNode';
+import SectionHeading from './SectionHeading';
 
 const nodeTypes = {
   motifStep: MotifStepNode,
@@ -38,8 +41,7 @@ const InputStep = step(
     kind: 'input',
     outputSchema: z.object({ email: z.string().email() }).passthrough(),
   },
-  ({ next, transitionIn }) => {
-    transitionIn(() => () => {});
+  ({ next }) => {
     return {
       submit: (email: string) => {
         next({ email });
@@ -206,6 +208,22 @@ export default function InteractiveShowcase() {
   // Execution State
   const [currentStepKind, setCurrentStepKind] = useState<string | null>(null);
   const orchestratorRef = useRef<WorkflowAPI<any> | null>(null);
+  // Add state to store workflow data for rendering, avoiding direct ref access in render
+  const [workflowData, setWorkflowData] = useState<any>(null);
+
+  // Update workflowData whenever currentStepKind changes or steps update
+  useEffect(() => {
+    // Wrap in timeout to avoid synchronous state update warning
+    const timer = setTimeout(() => {
+      if (orchestratorRef.current) {
+        const currentStep = orchestratorRef.current.getCurrentStep();
+        setWorkflowData(currentStep?.state?.data || null);
+      } else {
+        setWorkflowData(null);
+      }
+    }, 0);
+    return () => clearTimeout(timer);
+  }, [currentStepKind, isRunning]); // Add dependencies that indicate state change
 
   const isValidConnection = (prevId: string, nextId: string) => {
     // Input must be first
@@ -521,23 +539,14 @@ ${connections}
   return (
     <section className="relative px-6 py-24">
       <div className="mx-auto max-w-7xl">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="mb-16 text-center"
-        >
-          <h2 className="mb-6 bg-linear-to-b from-white to-white/60 bg-clip-text text-3xl font-bold tracking-tight text-transparent md:text-5xl">
-            Build in Seconds
-          </h2>
-          <p className="mx-auto max-w-2xl text-lg text-gray-400">
-            Compose workflows visually or with code. motif-ts keeps them in sync.
-          </p>
-        </motion.div>
+        <SectionHeading
+          title="Build in Seconds"
+          description="Compose workflows visually or with code. motif-ts keeps them in sync."
+        />
 
         <div className="grid h-[750px] gap-8 md:grid-cols-2">
           {/* Visual Builder */}
-          <div className="glass-panel relative flex flex-col overflow-hidden rounded-2xl border border-gray-800">
+          <GlassPanel className="relative flex flex-col overflow-hidden border-gray-800">
             <div className="absolute top-4 left-4 z-10 flex flex-wrap gap-2">
               {STEPS_INFO.map((step) => (
                 <motion.button
@@ -597,21 +606,17 @@ ${connections}
                 Use Conditional Edge
               </label>
 
-              <button
+              <Button
                 onClick={runWorkflow}
                 disabled={activeSteps.length === 0 || isRunning}
-                className={cn(
-                  'flex items-center gap-2 rounded-lg px-6 py-2 font-semibold transition-all',
-                  activeSteps.length === 0 || isRunning
-                    ? 'cursor-not-allowed bg-gray-800 text-gray-500'
-                    : 'bg-blue-600 text-white shadow-lg shadow-blue-500/20 hover:bg-blue-500',
-                )}
+                variant="primary"
+                className={cn(activeSteps.length === 0 || isRunning ? 'bg-gray-800 text-gray-500' : '')}
               >
-                <Play className="h-4 w-4" />
+                <Play className="mr-2 h-4 w-4" />
                 {isRunning ? 'Running...' : 'Run Workflow'}
-              </button>
+              </Button>
             </div>
-          </div>
+          </GlassPanel>
 
           {/* Right Panel: Flip Card (Code vs Live Preview) */}
           <div className="group relative h-full" style={{ perspective: '1000px' }}>
@@ -627,8 +632,8 @@ ${connections}
               }}
             >
               {/* Front Face: Generated Code */}
-              <div
-                className="glass-panel absolute inset-0 flex flex-col overflow-hidden rounded-2xl border border-gray-800 bg-[#0a0c10]"
+              <GlassPanel
+                className="absolute inset-0 flex flex-col overflow-hidden border-gray-800 bg-[#0a0c10]"
                 style={{ backfaceVisibility: 'hidden' }}
               >
                 <div className="flex items-center gap-2 border-b border-gray-800 bg-white/5 px-6 py-4 font-medium text-gray-500">
@@ -638,11 +643,11 @@ ${connections}
                 <div className="flex-1 overflow-auto p-6">
                   <CodeBlock code={generateCode()} />
                 </div>
-              </div>
+              </GlassPanel>
 
               {/* Back Face: Live Preview (Mobile Simulator) */}
-              <div
-                className="glass-panel absolute inset-0 flex flex-col overflow-hidden rounded-2xl border border-gray-800 bg-black"
+              <GlassPanel
+                className="absolute inset-0 flex flex-col overflow-hidden border-gray-800 bg-black"
                 style={{
                   transform: 'rotateY(180deg)',
                   backfaceVisibility: 'hidden',
@@ -718,12 +723,9 @@ ${connections}
                                 />
                               </div>
 
-                              <button
-                                type="submit"
-                                className="flex w-full items-center justify-center gap-2 rounded-xl bg-white py-3.5 text-sm font-bold text-black shadow-lg shadow-white/5 transition-colors hover:bg-gray-100"
-                              >
-                                Continue <ChevronRight className="h-4 w-4" />
-                              </button>
+                              <Button type="submit" variant="white" className="w-full">
+                                Continue <ChevronRight className="ml-2 h-4 w-4" />
+                              </Button>
                             </form>
                           </motion.div>
                         )}
@@ -788,12 +790,9 @@ ${connections}
                                 />
                               </div>
 
-                              <button
-                                type="submit"
-                                className="flex w-full items-center justify-center gap-2 rounded-xl bg-white py-3.5 text-sm font-bold text-black shadow-lg shadow-white/5 transition-colors hover:bg-gray-100"
-                              >
-                                Next <ChevronRight className="h-4 w-4" />
-                              </button>
+                              <Button type="submit" variant="white" className="w-full">
+                                Next <ChevronRight className="ml-2 h-4 w-4" />
+                              </Button>
                             </form>
                           </motion.div>
                         )}
@@ -814,16 +813,15 @@ ${connections}
 
                             <div className="space-y-3">
                               {['Free', 'Pro', 'Team'].map((plan) => (
-                                <button
+                                <Button
                                   key={plan}
+                                  variant="secondary"
                                   onClick={() => handlePlanSelect(plan)}
-                                  className="group w-full rounded-xl border border-gray-800 bg-gray-900 p-4 text-left transition-all hover:border-green-500/50 hover:bg-gray-800"
+                                  className="group w-full justify-between border-gray-800 bg-gray-900 p-4 hover:border-green-500/50 hover:bg-gray-800"
                                 >
-                                  <div className="flex items-center justify-between">
-                                    <span className="font-medium text-white">{plan}</span>
-                                    <ChevronRight className="h-4 w-4 text-gray-600 transition-colors group-hover:text-green-500" />
-                                  </div>
-                                </button>
+                                  <span className="font-medium text-white">{plan}</span>
+                                  <ChevronRight className="h-4 w-4 text-gray-600 transition-colors group-hover:text-green-500" />
+                                </Button>
                               ))}
                             </div>
                           </motion.div>
@@ -842,34 +840,24 @@ ${connections}
                             <h3 className="mb-2 text-2xl font-bold text-white">All Set!</h3>
                             <div className="mb-8 space-y-1 text-sm text-gray-400">
                               <p>
-                                Welcome,{' '}
-                                <span className="font-medium text-white">
-                                  {orchestratorRef.current?.getCurrentStep().state.data?.name || 'User'}
-                                </span>
+                                Welcome, <span className="font-medium text-white">{workflowData?.name || 'User'}</span>
                               </p>
                               <p>
-                                Role:{' '}
-                                <span className="text-white">
-                                  {orchestratorRef.current?.getCurrentStep().state.data?.role || 'N/A'}
-                                </span>
+                                Role: <span className="text-white">{workflowData?.role || 'N/A'}</span>
                               </p>
                               <p>
-                                Plan:{' '}
-                                <span className="text-white">
-                                  {orchestratorRef.current?.getCurrentStep().state.data?.plan || 'N/A'}
-                                </span>
+                                Plan: <span className="text-white">{workflowData?.plan || 'N/A'}</span>
                               </p>
-                              <p className="mt-2 text-xs text-gray-500">
-                                {orchestratorRef.current?.getCurrentStep().state.data?.email}
-                              </p>
+                              <p className="mt-2 text-xs text-gray-500">{workflowData?.email}</p>
                             </div>
 
-                            <button
+                            <Button
                               onClick={handleRestart}
-                              className="rounded-full border border-gray-800 bg-gray-900 px-8 py-3 text-sm font-medium text-white transition-all hover:bg-gray-800"
+                              variant="secondary"
+                              className="rounded-full bg-gray-900 px-8 py-3 hover:bg-gray-800"
                             >
                               Start Over
-                            </button>
+                            </Button>
                           </motion.div>
                         )}
                       </AnimatePresence>
@@ -879,7 +867,7 @@ ${connections}
                     <div className="absolute bottom-2 left-1/2 h-1 w-32 -translate-x-1/2 rounded-full bg-gray-800" />
                   </div>
                 </div>
-              </div>
+              </GlassPanel>
             </motion.div>
           </div>
         </div>
