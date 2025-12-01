@@ -144,14 +144,14 @@ describe('effects', () => {
       expect(effectCb).toHaveBeenCalledTimes(1);
       expect(effectCb).toHaveBeenCalledWith(0);
 
-      orchestrator.$$INTERNAL.pauseLifeCycle();
+      orchestrator.pause();
       expect(cleanupCb).toHaveBeenCalledTimes(1);
 
       // Should not trigger effect
       currentStep.state.inc();
       expect(effectCb).toHaveBeenCalledTimes(1);
 
-      orchestrator.$$INTERNAL.resumeLifeCycle();
+      orchestrator.resume();
       expect(effectCb).toHaveBeenCalledTimes(2);
       expect(effectCb).toHaveBeenCalledWith(1);
 
@@ -168,11 +168,11 @@ describe('effects', () => {
       orchestrator.register([first]);
       orchestrator.start(first);
 
-      expect(orchestrator.$$INTERNAL.isLifeCyclePaused()).toBe(false);
-      orchestrator.$$INTERNAL.pauseLifeCycle();
-      expect(orchestrator.$$INTERNAL.isLifeCyclePaused()).toBe(true);
-      orchestrator.$$INTERNAL.resumeLifeCycle();
-      expect(orchestrator.$$INTERNAL.isLifeCyclePaused()).toBe(false);
+      expect(orchestrator.$$INTERNAL.isWorkflowRunning()).toBe(true);
+      orchestrator.pause();
+      expect(orchestrator.$$INTERNAL.isWorkflowRunning()).toBe(false);
+      orchestrator.resume();
+      expect(orchestrator.$$INTERNAL.isWorkflowRunning()).toBe(true);
     });
 
     it('should handle multiple pause/resume calls', () => {
@@ -204,15 +204,15 @@ describe('effects', () => {
       assert(currentStep.kind === 'Step');
       expect(effectCb).toHaveBeenCalledTimes(1);
 
-      orchestrator.$$INTERNAL.pauseLifeCycle();
-      orchestrator.$$INTERNAL.pauseLifeCycle(); // second call should be a no-op
+      orchestrator.pause();
+      orchestrator.pause(); // second call should be a no-op
       expect(cleanupCb).toHaveBeenCalledTimes(1);
 
       currentStep.state.inc();
       expect(effectCb).toHaveBeenCalledTimes(1);
 
-      orchestrator.$$INTERNAL.resumeLifeCycle();
-      orchestrator.$$INTERNAL.resumeLifeCycle(); // second call should be a no-op
+      orchestrator.resume();
+      orchestrator.resume(); // second call should be a no-op
       expect(effectCb).toHaveBeenCalledTimes(2);
 
       currentStep.state.inc();

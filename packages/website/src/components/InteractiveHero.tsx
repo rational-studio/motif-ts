@@ -352,7 +352,7 @@ export default function InteractiveHero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="mb-6 text-5xl font-bold tracking-tight md:text-7xl"
+          className="mb-6 text-5xl font-semibold tracking-tighter md:text-8xl"
         >
           Workflow Orchestration <br />
           <span className="text-gradient">Reimagined</span>

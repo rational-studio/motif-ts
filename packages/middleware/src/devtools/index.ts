@@ -26,7 +26,8 @@ export default function devtoolsMiddleware<const Creators extends readonly StepC
   const {
     getCurrentStep,
     subscribe,
-    $$INTERNAL: { nodes, transitionInto, getCurrentNode, getContext, pauseLifeCycle, history },
+    pause,
+    $$INTERNAL: { nodes, transitionInto, getCurrentNode, getContext, history },
   } = workflow;
 
   const { name } = options;
@@ -111,7 +112,7 @@ export default function devtoolsMiddleware<const Creators extends readonly StepC
           break;
         }
         case 'JUMP_TO_ACTION': {
-          pauseLifeCycle();
+          pause();
           if (typeof message.state === 'string') {
             const parsed = JSON.parse(message.state) as DevtoolsSnapshot;
             restoreFromSnapshot(parsed);

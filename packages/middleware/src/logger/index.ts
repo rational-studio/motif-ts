@@ -4,7 +4,7 @@ export type LoggerOptions = {
   prefix?: string;
   showPayload?: boolean;
   palette?: Partial<
-    Record<'Workflow' | 'Register' | 'Start' | 'Back' | 'TransitionIn' | 'Ready' | 'TransitionOut' | 'Error', string>
+    Record<'Workflow' | 'Register' | 'Start' | 'Back' | 'Pause' | 'Resume' | 'TransitionIn' | 'Ready' | 'TransitionOut' | 'Error', string>
   >;
 };
 
@@ -13,6 +13,8 @@ const defaultPalette = {
   Register: '#3b82f6',
   Start: '#22c55e',
   Back: '#64748b',
+  Pause: '#f59e0b',
+  Resume: '#10b981',
   TransitionIn: '#f59e0b',
   Ready: '#10b981',
   TransitionOut: '#ef4444',
@@ -28,7 +30,7 @@ export default function loggerMiddleware<const Creators extends readonly StepCre
   workflow: WorkflowAPI<Creators>,
   options: LoggerOptions = {},
 ): WorkflowAPI<Creators> {
-  const { connect, getCurrentStep, subscribe, goBack, stop, $$INTERNAL } = workflow;
+  const { connect, getCurrentStep, subscribe, goBack, stop, pause, resume, $$INTERNAL } = workflow;
 
   const prefix = options.prefix ?? '[motif] ';
   const palette = options.palette;
@@ -62,6 +64,14 @@ export default function loggerMiddleware<const Creators extends readonly StepCre
     start(node) {
       log('Start', { id: node.id, kind: node.kind, name: node.name });
       return workflow.start(node);
+    },
+    pause() {
+      log('Pause');
+      return pause();
+    },
+    resume() {
+      log('Resume');
+      return resume();
     },
     getCurrentStep,
     subscribe,

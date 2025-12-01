@@ -68,6 +68,14 @@ export interface WorkflowAPI<Creators extends readonly StepCreatorAny[]> {
   ): WorkflowAPI<Creators>;
   stop(): void;
   /**
+   * Pause the workflow.
+   */
+  pause(): void;
+  /**
+   * Resume the workflow.
+   */
+  resume(): void;
+  /**
    * Get the current step.
    */
   getCurrentStep(): CurrentStepStatus<Creators>;
@@ -100,8 +108,6 @@ export interface WorkflowAPI<Creators extends readonly StepCreatorAny[]> {
     ) => void;
     stop: () => void;
     setCurrentStep: (currentStep: CurrentStepStatus<Creators>) => void;
-    isLifeCyclePaused: () => boolean;
-    pauseLifeCycle: () => void;
-    resumeLifeCycle: () => void;
+    isWorkflowRunning: () => boolean;
   };
 }

@@ -44,7 +44,7 @@ export function workflow<const Creators extends readonly StepCreatorAny[]>(inven
   }> = [];
   let context: WorkflowContext | undefined;
   let contextVersionCounter = 0;
-  let isLifeCyclePaused = false;
+  let isWorkflowRunning = false;
   //#endregion
 
   // #region States, need to be serialized for time-traveling
@@ -69,7 +69,7 @@ export function workflow<const Creators extends readonly StepCreatorAny[]>(inven
 
   const notify = (currentStep: CurrentStepStatus<Creators>) => {
     for (const cb of subscribers) {
-      cb(currentStep, !isLifeCyclePaused);
+      cb(currentStep, isWorkflowRunning);
     }
   };
 
@@ -82,7 +82,7 @@ export function workflow<const Creators extends readonly StepCreatorAny[]>(inven
     if (!context || context.hasRunIn) {
       return;
     }
-    if (isLifeCyclePaused) {
+    if (!isWorkflowRunning) {
       return;
     }
     context.inCleanups = [];
@@ -130,7 +130,7 @@ export function workflow<const Creators extends readonly StepCreatorAny[]>(inven
       });
     }
     if (context) {
-      if (!isLifeCyclePaused) {
+      if (isWorkflowRunning) {
         for (let i = 0; i < context.outHooks.length; i++) {
           const hook = context.outHooks[i];
           const result = hook();
@@ -182,17 +182,17 @@ export function workflow<const Creators extends readonly StepCreatorAny[]>(inven
     const args: BuildArgs<any, any, any, any> = {
       name: node.name,
       transitionIn: (hook) => {
-        if (!context?.hasRunIn && !isLifeCyclePaused) {
+        if (!context?.hasRunIn && isWorkflowRunning) {
           inHooks.push(hook);
         }
       },
       transitionOut: (hook) => {
-        if (!isLifeCyclePaused) {
+        if (isWorkflowRunning) {
           outHooks.push(hook);
         }
       },
       effect: (fn, deps) => {
-        if (!isLifeCyclePaused) {
+        if (isWorkflowRunning) {
           effectsDefs.push({ run: fn, deps });
         }
       },
@@ -319,17 +319,17 @@ export function workflow<const Creators extends readonly StepCreatorAny[]>(inven
     const args: any = {
       name: stepInstance.name,
       transitionIn: (hook: TransitionHook) => {
-        if (!isLifeCyclePaused) {
+        if (isWorkflowRunning) {
           inHooks.push(hook);
         }
       },
       transitionOut: (hook: TransitionHook) => {
-        if (!isLifeCyclePaused) {
+        if (isWorkflowRunning) {
           outHooks.push(hook);
         }
       },
       effect: (fn: () => CleanupFn, deps?: DependencyList) => {
-        if (!isLifeCyclePaused) {
+        if (isWorkflowRunning) {
           effectsDefs.push({ run: fn, deps });
         }
       },
@@ -357,7 +357,7 @@ export function workflow<const Creators extends readonly StepCreatorAny[]>(inven
       version: ++contextVersionCounter,
     };
 
-    if (isLifeCyclePaused) {
+    if (!isWorkflowRunning) {
       setCurrentStep({
         status: 'ready',
         kind: stepInstance.kind,
@@ -458,6 +458,7 @@ export function workflow<const Creators extends readonly StepCreatorAny[]>(inven
     if (!nodes.has(node)) {
       throw new Error(`Cannot start on unregistered StepInstance '${node.id}'. Register the instance before starting.`);
     }
+    isWorkflowRunning = true;
     transitionInto(node, undefined as I, false, []);
     return workflowApis;
   };
@@ -476,15 +477,15 @@ export function workflow<const Creators extends readonly StepCreatorAny[]>(inven
     return context;
   };
 
-  const getIsLifeCyclePaused = () => {
-    return isLifeCyclePaused;
+  const getIsWorkflowRunning = () => {
+    return isWorkflowRunning;
   };
 
-  const pauseLifeCycle = () => {
-    if (isLifeCyclePaused) {
+  const pause = () => {
+    if (!isWorkflowRunning) {
       return;
     }
-    isLifeCyclePaused = true;
+    isWorkflowRunning = false;
     if (context) {
       for (const eff of context.effects) {
         if (typeof eff.cleanup === 'function') {
@@ -498,11 +499,11 @@ export function workflow<const Creators extends readonly StepCreatorAny[]>(inven
     }
   };
 
-  const resumeLifeCycle = () => {
-    if (!isLifeCyclePaused) {
+  const resume = () => {
+    if (isWorkflowRunning) {
       return;
     }
-    isLifeCyclePaused = false;
+    isWorkflowRunning = true;
     if (context && currentStep) {
       context.storeUnsub = currentStep.instance.storeApi
         ? currentStep.instance.storeApi.subscribe(() => {
@@ -519,7 +520,7 @@ export function workflow<const Creators extends readonly StepCreatorAny[]>(inven
   };
 
   const stop = () => {
-    pauseLifeCycle();
+    pause();
     _internalStop();
   };
 
@@ -544,11 +545,13 @@ export function workflow<const Creators extends readonly StepCreatorAny[]>(inven
   const workflowApis = {
     register,
     connect,
-    start,
     getCurrentStep,
     subscribe,
     goBack,
+    start,
     stop,
+    pause,
+    resume,
     // For Internal Use
     $$INTERNAL: {
       nodes,
@@ -561,9 +564,7 @@ export function workflow<const Creators extends readonly StepCreatorAny[]>(inven
       transitionInto,
       setCurrentStep,
       stop: _internalStop,
-      isLifeCyclePaused: getIsLifeCyclePaused,
-      pauseLifeCycle,
-      resumeLifeCycle,
+      isWorkflowRunning: getIsWorkflowRunning,
     },
   };
 
