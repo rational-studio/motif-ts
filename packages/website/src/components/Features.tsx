@@ -16,9 +16,10 @@ const FEATURES = [
     bg: 'bg-blue-500/10',
   },
   {
-    title: 'DevTools & Persist',
+    title: 'DevTools & Persistence',
     packageName: [{ name: '@motif-ts/middleware', active: true }],
-    description: 'Use Redux DevTools time travel, export/import workflow snapshots, and restore states safely.',
+    description:
+      'Time-travel with Redux DevTools, export/import full snapshots or just the workflow config, and safely restore any state.',
     icon: History,
     color: 'text-purple-400',
     bg: 'bg-purple-500/10',

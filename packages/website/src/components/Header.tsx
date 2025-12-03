@@ -31,7 +31,7 @@ export default function Header() {
           <div className="h-4 w-px bg-white/10" />
 
           <a
-            href="https://github.com/rational-studio/motif-ts"
+            href="https://github.com/Cryrivers/motif-ts"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 rounded-full border border-white/5 bg-white/10 px-4 py-1.5 text-sm font-medium text-white transition-all hover:bg-white/20"

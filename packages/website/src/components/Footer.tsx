@@ -14,7 +14,7 @@ export default function Footer() {
           <div className="flex flex-col gap-4 md:items-end">
             <div className="flex items-center gap-6">
               <a
-                href="https://github.com/rational-studio/motif-ts"
+                href="https://github.com/Cryrivers/motif-ts"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 text-sm text-gray-400 transition-colors hover:text-white"
@@ -23,7 +23,7 @@ export default function Footer() {
                 GitHub
               </a>
               <a
-                href="https://github.com/rational-studio/motif-ts#readme"
+                href="https://github.com/Cryrivers/motif-ts#readme"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-sm text-gray-400 transition-colors hover:text-white"
